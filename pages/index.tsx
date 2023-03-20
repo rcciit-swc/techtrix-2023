@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import Events from "@/components/landingPage/Events";
+import Events from "@/components/LandingPage/Events";
 import data from "../public/data.json";
 
 
