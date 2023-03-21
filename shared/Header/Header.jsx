@@ -17,7 +17,7 @@ function Header() {
     }
   }, [sidebarOpen]);
   return (
-    <div className=" bg-[#2F2F2F] flex justify-between m-4">
+    <div className=" bg-[#2F2F2F] absolute w-full flex justify-between m-4">
       <Image className=" w-64 mt-4 ml-1" src={RCCImage} alt="RCC" />
       <div className=" flex justify-around items-center nav-items">
         <Link href="/home">
