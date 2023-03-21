@@ -2,7 +2,7 @@ import Head from "next/head";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import data from "../public/data.json";
-
+import Header from "@/shared/Header/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,9 +16,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-      <div className=" text-red-700 bg-black">
-      Hello World
-      </div>
+        <Header />
       </main>
     </>
   );
