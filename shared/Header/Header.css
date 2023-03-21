@@ -1,0 +1,15 @@
+.hamburger{
+    display: none;
+}
+.sidebarContainer{
+    display:none;
+}
+
+@media screen and (max-width: 850px) {
+    .nav-items {
+        display: none;
+    }
+    .hamburger {
+        display: flex;
+    }
+}
