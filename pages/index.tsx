@@ -16,7 +16,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
         <style>
           @import
-          url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@700&display=swap');
+          url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&display=swap');
         </style>
       </Head>
       <main>
