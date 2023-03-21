@@ -59,7 +59,7 @@ function Header() {
         </svg>
       </div>
       <div
-        className="absolute top-0 right-0 w-[270px] h-full bg-[#2F2F2F] sidebar"
+        className="fixed top-0 right-0 bottom-0 w-[270px] bg-[#2F2F2F] sidebar"
         id="sidebarContainer"
       >
           <Image
