@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 import data from "../../public/data.json";
 import Button from "../Button";
@@ -10,10 +11,12 @@ const HeroSection = () => {
       }}
     >
       <div className="flex flex-col items-center justify-center h-screen">
-        <img
+        <Image
           src="https://i.imgur.com/3iFfGAP.png"
           alt="techtrix"
           className="w-80 h-80 mb-5 mt-10"
+          width={300}
+          height={300}
         />
         <h1 className="text-7xl font-semibold text-white my-1 ">
           {data["title"]}

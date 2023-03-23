@@ -16,7 +16,7 @@ export default function NavBar() {
         <div>
           <div className="flex items-center justify-between py-3 md:py-5 md:block">
             <a href="javascript:void(0)">
-              <img
+              <Image
                 src="https://i.imgur.com/cEHsdDm.png"
                 alt="rcciit"
                 width={250}

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Button from "../Button";
 
 const AboutUs = () => {
@@ -24,10 +25,11 @@ const AboutUs = () => {
           <Button text="Know More About RCCIIT !" />
         </div>
         <div className="my-8">
-          <img
+          <Image
             src="https://i.imgur.com/3iFfGAP.png"
             alt="techTrix"
             width={300}
+            height={300}
           />
         </div>
       </div>

@@ -5,6 +5,7 @@ import HeroSection from "@/components/HeroSection/HeroSection";
 import Band from "@/components/Band/Band";
 import AboutUs from "@/components/AboutUs/AboutUs";
 import { supabase } from "@/utils/SupabaseClient";
+import EventCategories from "@/components/EventCategories/EventCategories";
 
 async function getEventsData({ table }: { table: string }) {
   try {
@@ -39,9 +40,7 @@ export default function Home({ data }: { data: any }) {
   return (
     <>
       <Head>
-        <title>
-          {localData["title"]} {localData["year"]}
-        </title>
+        <title>{`${localData["title"]} ${localData["year"]}`}</title>
         <meta name="description" content="RCCIIT's Official Techfest" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -92,6 +91,9 @@ export default function Home({ data }: { data: any }) {
           angle="-6deg"
           dir="right"
         />
+        <EventCategories
+          eventCategories={data[1]["event_categories"]}
+        ></EventCategories>
       </main>
     </>
   );
