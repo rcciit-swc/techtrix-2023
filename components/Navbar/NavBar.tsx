@@ -1,27 +1,27 @@
 import { useState } from "react";
-import Image from 'next/image'
+import Image from "next/image";
 
 export default function NavBar() {
   const [navbar, setNavbar] = useState(false);
 
   return (
-    <nav className="w-full bg-transparent shadow"
-    style={{
-      background:
-        "linear-gradient(146deg, rgba(16,16,16,0.8800770308123249) 39%, rgba(0,0,0,0.9164915966386554) 88%)",
-    }}
+    <nav
+      className="w-full bg-transparent shadow"
+      style={{
+        background:
+          "linear-gradient(146deg, rgba(16,16,16,0.8800770308123249) 39%, rgba(0,0,0,0.9164915966386554) 88%)",
+      }}
     >
       <div className="justify-between px-4 mx-auto lg:max-wfull md:items-center md:flex md:px-8">
         <div>
           <div className="flex items-center justify-between py-3 md:py-5 md:block">
             <a href="javascript:void(0)">
-                <img
+              <img
                 src="https://i.imgur.com/cEHsdDm.png"
                 alt="rcciit"
                 width={250}
                 height={100}
-
-                />
+              />
             </a>
             <div className="md:hidden">
               <div
@@ -30,17 +30,17 @@ export default function NavBar() {
               >
                 <span
                   className={`h-1 w-full bg-white rounded-lg transform transition duration-300 ease-in-out ${
-                    navbar? "rotate-45 translate-y-3.5" : ""
+                    navbar ? "rotate-45 translate-y-3.5" : ""
                   }`}
                 />
                 <span
                   className={`h-1 w-full bg-white rounded-lg transition-all duration-300 ease-in-out ${
-                    navbar? "w-0 translate-x-14" : "w-full"
+                    navbar ? "w-0 translate-x-14" : "w-full"
                   }`}
                 />
                 <span
                   className={`h-1 w-full bg-white rounded-lg transform transition duration-300 ease-in-out ${
-                    navbar? "-rotate-45 -translate-y-3.5" : ""
+                    navbar ? "-rotate-45 -translate-y-3.5" : ""
                   }`}
                 />
               </div>
