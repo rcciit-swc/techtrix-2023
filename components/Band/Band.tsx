@@ -49,15 +49,17 @@ function Band({
         }}
       >
         <Marquee gradient={false} speed={100} direction={dir}>
-          {genrateText(text, number).map((text, index) => (
+          {genrateText(text, number).map((text) => (
             <>
               <OutlineText
                 textOutline={`${outlineColor}`}
-                key={`band_text_${index}`}
+                // key={`band_text_${index}`}
               >
                 {text}
               </OutlineText>
-              <Text color={`${textColor}`} key={`band_text_${index}`}>
+              <Text color={`${textColor}`} 
+              // key={`band_text_${index}`}
+              >
                 {text}
               </Text>
             </>

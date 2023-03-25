@@ -15,7 +15,7 @@ export default function NavBar() {
       <div className="justify-between px-4 mx-auto lg:max-wfull md:items-center md:flex md:px-8">
         <div>
           <div className="flex items-center justify-between py-3 md:py-5 md:block">
-            <a href="javascript:void(0)">
+            <a href="#">
               <Image
                 src="https://i.imgur.com/cEHsdDm.png"
                 alt="rcciit"
@@ -55,16 +55,16 @@ export default function NavBar() {
           >
             <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
               <li className="text-white hover:text-blue-600">
-                <a href="javascript:void(0)">Home</a>
+                <a href="#">Home</a>
               </li>
               <li className="text-white hover:text-blue-600">
-                <a href="javascript:void(0)">Blog</a>
+                <a href="#">Blog</a>
               </li>
               <li className="text-white hover:text-blue-600">
-                <a href="javascript:void(0)">About US</a>
+                <a href="#">About US</a>
               </li>
               <li className="text-white hover:text-blue-600">
-                <a href="javascript:void(0)">Contact US</a>
+                <a href="#">Contact US</a>
               </li>
             </ul>
           </div>

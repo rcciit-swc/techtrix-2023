@@ -14,7 +14,7 @@ const HeroSection = () => {
         <Image
           src="https://i.imgur.com/3iFfGAP.png"
           alt="techtrix"
-          className="w-80 h-80 mb-5 mt-10"
+          className="mb-5 mt-10"
           width={300}
           height={300}
         />

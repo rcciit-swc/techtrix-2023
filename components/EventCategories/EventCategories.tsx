@@ -8,8 +8,8 @@ const EventCategories = ({ eventCategories }: { eventCategories: any[] }) => {
         return (
           <div key={`event__category__${index}`}>
             <Image
-              src={`${eventCategory.picture}.png    `}
-              alt=""
+              src={`${eventCategory.picture}.png`}
+              alt={eventCategory.name}
               width={200}
               height={200}
             />
