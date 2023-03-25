@@ -57,8 +57,9 @@ function Band({
               >
                 {text}
               </OutlineText>
-              <Text color={`${textColor}`} 
-              // key={`band_text_${index}`}
+              <Text
+                color={`${textColor}`}
+                // key={`band_text_${index}`}
               >
                 {text}
               </Text>

@@ -1,8 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { login } from "@/utils/login";
+import { getSession } from "@/utils/getSession";
+import Link from "next/link";
 
 export default function NavBar() {
   const [navbar, setNavbar] = useState(false);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    getSession().then((token) => {
+      if (token !== null) setIsLoggedIn(true);
+    });
+  });
 
   return (
     <nav
@@ -55,7 +66,7 @@ export default function NavBar() {
           >
             <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
               <li className="text-white hover:text-blue-600">
-                <a href="#">Home</a>
+                <Link href="/">Home</Link>
               </li>
               <li className="text-white hover:text-blue-600">
                 <a href="#">Blog</a>
@@ -66,6 +77,21 @@ export default function NavBar() {
               <li className="text-white hover:text-blue-600">
                 <a href="#">Contact US</a>
               </li>
+              {isLoggedIn ? (
+                <li className="text-white hover:text-blue-600">
+                  <Link href="/dashboard">Dashboard</Link>
+                </li>
+              ) : (
+                <li className="text-white hover:text-blue-600">
+                  <button
+                    onClick={() => {
+                      login();
+                    }}
+                  >
+                    Login!
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
         </div>

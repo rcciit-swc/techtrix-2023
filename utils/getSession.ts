@@ -6,5 +6,10 @@ export async function getSession() {
     console.error(error);
     return null;
   }
+
+  if (data.session == null) {
+    return null;
+  }
+
   return data;
 }
