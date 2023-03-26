@@ -4,29 +4,13 @@ import NavBar from "@/components/Navbar/NavBar";
 import { redirect } from "next/navigation";
 import { getSession } from "@/utils/getSession";
 import { useEffect, useState } from "react";
-import { getData } from "@/utils/getData";
+import { getData, isUserEmpty } from "@/utils/getData";
 import Image from "next/image";
 import Button from "@/components/Button";
-import { supabase } from "@/utils/SupabaseClient";
 import { useRouter } from "next/router";
 import Modal from "@/components/Modal/Modal";
 import Link from "next/link";
 import { signOut } from "@/utils/signOut";
-
-async function isUserEmpty() {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (user !== null) {
-    let { data } = await supabase.from("users").select("*").eq("id", user.id);
-
-    if (data && (data[0]["name"] === null || data[0]["college"] === null)) {
-      return true;
-    }
-  }
-  return false;
-}
 
 export async function getServerSideProps() {
   const data = await Promise.all([

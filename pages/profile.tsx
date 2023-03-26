@@ -1,17 +1,41 @@
 import NavBar from "@/components/Navbar/NavBar";
+import { getUser, getUserProfile } from "@/utils/getData";
 import { searchCollege } from "@/utils/searchCollege";
+import { updateProfile } from "@/utils/updateProfile";
+import { User } from "@supabase/supabase-js";
 import { debounce } from "lodash";
 import Head from "next/head";
-import { useState } from "react";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 import localData from "../public/data.json";
 
 const Profile = () => {
+  const [user, setUser] = useState<User>();
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     college: "",
     year: "",
   });
+
+  useEffect(() => {
+    getUser().then((user) => {
+      if (user) {
+        setUser(user);
+        getUserProfile(user.id).then((profile) => {
+          setFormData({
+            name: profile?.name,
+            phone: profile?.phone,
+            college: profile?.college,
+            year: profile?.year || "",
+          });
+        });
+      } else {
+        redirect("/");
+      }
+    });
+  }, []);
 
   const [suggestions, setSuggestions] = useState<Array<any>>([]);
 
@@ -21,6 +45,19 @@ const Profile = () => {
       setSuggestions: setSuggestions,
     });
   }, 1000);
+
+  function editProfile(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (user) {
+      updateProfile({
+        id: user.id,
+        name: formData.name,
+        phone: formData.phone,
+        college: formData.college,
+        year: formData.year,
+      });
+    }
+  }
 
   return (
     <>
@@ -33,7 +70,7 @@ const Profile = () => {
       <NavBar />
       <main className="h-full">
         <div className="flex flex-col w-full justify-center items-center">
-          <form>
+          <form onSubmit={editProfile}>
             <div className="space-y-12">
               <div className="border-b border-gray-900/10 pb-12">
                 <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -142,9 +179,9 @@ const Profile = () => {
                         id="Year"
                         autoComplete="off"
                         className="block pl-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        placeholder="Name"
+                        placeholder="Year"
                         onChange={(e) =>
-                          setFormData({ ...formData, name: e.target.value })
+                          setFormData({ ...formData, year: e.target.value })
                         }
                       />
                     </div>
@@ -152,7 +189,6 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-
             <div className="mt-6 flex items-center justify-end gap-x-6">
               <button
                 type="button"

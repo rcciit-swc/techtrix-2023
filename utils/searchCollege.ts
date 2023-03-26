@@ -7,7 +7,6 @@ export function searchCollege({
   collegeInput: string;
   setSuggestions: (...args: any) => void;
 }) {
-  console.log(collegeInput, " ");
   let suggestionsArr = [];
   if (collegeInput.length > 2) {
     const colleges = collegeArr.filter((college) =>
