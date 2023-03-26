@@ -7,7 +7,7 @@ export function searchCollege({
   collegeInput: string;
   setSuggestions: (...args: any) => void;
 }) {
-  let suggestionsArr = [];
+  let suggestionsArr: any[] = [];
   if (collegeInput.length > 2) {
     const colleges = collegeArr.filter((college) =>
       college.toLowerCase().includes(collegeInput.toLowerCase())

@@ -76,7 +76,9 @@ const Events = () => {
                     <th
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                    ></th>
+                    >
+                      {registrationData.events && registrationData.events.name}
+                    </th>
                     <th
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"

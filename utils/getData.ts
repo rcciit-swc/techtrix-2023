@@ -27,7 +27,9 @@ export async function getRegisteredEvents({
     if (user) {
       let { data, error } = await supabase
         .from("participation")
-        .select(select)
+        .select(
+          `team_name, team_member_0, team_member_1, team_member_2, team_member_3, team_member_4, team_member_5, transaction_id, transaction_verified, events(name)`
+        )
         .eq("registered_by", user.email);
 
       const participationData: Participation[] =
