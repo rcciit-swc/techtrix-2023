@@ -1,6 +1,6 @@
 import collegeArr from './collegeArray';
 
-export function searchCollege({collegeInput, setSuggestions}: {collegeInput: string; setSuggestions: (...args:any) => void}) {
+export function searchCollege({collegeInput = "", setSuggestions}: {collegeInput: string ; setSuggestions: (...args:any) => void}) {
 	let suggestionsArr = [];
 	if (collegeInput.length > 2) {
 		const colleges = collegeArr.filter((college) =>

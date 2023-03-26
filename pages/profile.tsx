@@ -15,6 +15,7 @@ const Profile = () => {
 
   const [suggestions, setSuggestions] = useState<Array<any>>([]);
 
+
   return (
     <>
       <Head>
@@ -101,13 +102,14 @@ const Profile = () => {
                         placeholder="College"
                         onChange={(e) => {
                           setFormData({ ...formData, college: e.target.value });
-                          // debounce(
-                          //   searchCollege({
-                          //     collegeInput: e.target.value,
-                          //     setSuggestions: setSuggestions,
-                          //   }),
-                          //   500
-                          // );
+                          debounce(
+                            () =>
+                            searchCollege({
+                              collegeInput: e.target.value,
+                              setSuggestions: setSuggestions
+                            }),
+                            500
+                          );
                         }}
                       />
                       <div className="listGroup">
