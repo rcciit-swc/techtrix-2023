@@ -10,6 +10,8 @@ import Button from "@/components/Button";
 import { supabase } from "@/utils/SupabaseClient";
 import { useRouter } from "next/router";
 import Modal from "@/components/Modal/Modal";
+import Link from "next/link";
+import { signOut } from "@/utils/signOut";
 
 async function isUserEmpty() {
   const {
@@ -79,6 +81,29 @@ export default function Dashboard({ data }: { data: any }) {
         }}
       >
         <NavBar />
+        <div className="flex flex-row justify-end mt-2 mr-4">
+          <Link
+            className="w-fit hover:bg-gray-600 action:bg-gray-600 rounded py-2 px-4"
+            href="/profile"
+            style={{
+              color: "white",
+            }}
+          >
+            Edit Profile
+          </Link>
+          <button
+            className="w-fit hover:bg-red-600 action:bg-red-600 rounded py-2 px-4"
+            style={{
+              color: "white",
+            }}
+            onClick={() => {
+              signOut();
+              router.replace("/");
+            }}
+          >
+            Sign Out!
+          </button>
+        </div>
         <div className="flex flex-row flex-wrap items-center justify-center h-full w-full">
           {data[0].events.map((event: any) => {
             return (
