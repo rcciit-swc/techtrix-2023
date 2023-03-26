@@ -32,10 +32,12 @@ function Band({
 
   return (
     <div
-      style={{
-        // background:
-        //   "linear-gradient(146deg, rgba(16,16,16,0.8800770308123249) 39%, rgba(0,0,0,0.9164915966386554) 88%)",
-      }}
+      style={
+        {
+          // background:
+          //   "linear-gradient(146deg, rgba(16,16,16,0.8800770308123249) 39%, rgba(0,0,0,0.9164915966386554) 88%)",
+        }
+      }
     >
       <div
         className={`bg-${bgColor}`}

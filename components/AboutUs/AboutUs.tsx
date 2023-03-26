@@ -5,10 +5,12 @@ const AboutUs = () => {
   return (
     <main
       className="h-full flex flex-row w-full justify-center items-center"
-      style={{
-        // background:
-        //   "linear-gradient(146deg, rgba(16,16,16,0.8800770308123249) 39%, rgba(0,0,0,0.9164915966386554) 88%)",
-      }}
+      style={
+        {
+          // background:
+          //   "linear-gradient(146deg, rgba(16,16,16,0.8800770308123249) 39%, rgba(0,0,0,0.9164915966386554) 88%)",
+        }
+      }
     >
       <div className="flex flex-row w-full justify-evenly items-center py-16 flex-wrap">
         <div className="flex flex-col items-center justify-center h-full w-full md:w-1/2 xl:w-1/2 px-16">
