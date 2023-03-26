@@ -85,6 +85,24 @@ export default function Home({ data }: { data: any }) {
         <EventCategories
           eventCategories={data[1]["event_categories"]}
         ></EventCategories>
+        <Band
+          text="Contact"
+          number={10}
+          bgColor="black"
+          textColor="white"
+          outlineColor="white"
+          angle="6deg"
+          dir="left"
+        />
+        <Band
+          text="Contact"
+          number={10}
+          bgColor="white"
+          textColor="black"
+          outlineColor="black"
+          angle="6deg"
+          dir="right"
+        />
       </main>
     </>
   );
