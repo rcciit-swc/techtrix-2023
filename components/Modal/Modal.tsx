@@ -1,7 +1,10 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { getNumberWithOrdinal } from "@/utils/dataHelper";
-import Button from "../Button";
+import {
+  newSoloRegistration,
+  newTeamRegistration,
+} from "@/utils/newRegistration";
 
 export default function Modal({
   open,
@@ -13,9 +16,7 @@ export default function Modal({
   event: any;
 }) {
   const [teamName, setTeamName] = useState<string>("");
-  const [team, setTeam] = useState<any>([""]);
-
-  console.log(event.min_team_size)
+  const [team, setTeam] = useState<any[]>([""]);
 
   const renderFormFields = (size: number) => {
     return Array(size)
@@ -51,6 +52,12 @@ export default function Modal({
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    newTeamRegistration({
+      team_name: teamName,
+      team_members: team,
+      event_id: event.id,
+    });
+    setOpen(false);
   };
 
   const cancelButtonRef = useRef(null);
@@ -74,7 +81,6 @@ export default function Modal({
         >
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
-
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex min-h-full items-end justify-center p-4 text-center  sm:items-center sm:p-0">
             <Transition.Child
@@ -110,9 +116,7 @@ export default function Modal({
                           }}
                         />
                       </div>
-                      <p
-                        className="mt-2"
-                      >
+                      <p className="mt-2">
                         {event.type === "TEAM" && (
                           <form
                             className="grid grid-cols-1 gap-y-6 sm:grid-cols-6"
@@ -139,21 +143,35 @@ export default function Modal({
                               </div>
                             </div>
                             {renderFormFields(event.team_size)}
-                            <div
-                              className="sm:col-span-6"
-                            >
-                            <button
-                              type="submit"
-                              className="mt-4 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-3 sm:text-sm"
-                            >Submit</button>
-                            <button
-                              type="button"
-                              className="mt-4 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-3 sm:text-sm"
-                              onClick={() => setOpen(false)}
-                              ref={cancelButtonRef}
-                            >Cancel</button>
+                            <div className="sm:col-span-6">
+                              <button
+                                type="submit"
+                                className="mt-4 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-3 sm:text-sm"
+                              >
+                                Submit
+                              </button>
+                              <button
+                                type="button"
+                                className="mt-4 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-3 sm:text-sm"
+                                onClick={() => setOpen(false)}
+                                ref={cancelButtonRef}
+                              >
+                                Cancel
+                              </button>
                             </div>
                           </form>
+                        )}
+                        {event.type === "SOLO" && (
+                          <button
+                            type="submit"
+                            className="mt-4 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-3 sm:text-sm"
+                            onClick={() => {
+                              newSoloRegistration({ event_id: event.id });
+                              setOpen(false);
+                            }}
+                          >
+                            Register Now!
+                          </button>
                         )}
                       </p>
                     </div>

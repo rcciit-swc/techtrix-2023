@@ -19,6 +19,6 @@ export async function updateProfile({
     .eq("id", id);
 
   if (error) {
-    return error
+    return error;
   }
 }

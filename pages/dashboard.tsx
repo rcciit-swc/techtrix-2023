@@ -4,7 +4,7 @@ import NavBar from "@/components/Navbar/NavBar";
 import { redirect } from "next/navigation";
 import { getSession } from "@/utils/getSession";
 import { useEffect, useState } from "react";
-import { getData, isUserEmpty } from "@/utils/getData";
+import { getData, isUserDetailsEmpty } from "@/utils/getData";
 import Image from "next/image";
 import Button from "@/components/Button";
 import { useRouter } from "next/router";
@@ -32,7 +32,7 @@ export default function Dashboard({ data }: { data: any }) {
   const router = useRouter();
 
   useEffect(() => {
-    isUserEmpty().then((value) => {
+    isUserDetailsEmpty().then((value) => {
       if (value) {
         router.push("/profile");
       }
@@ -68,6 +68,15 @@ export default function Dashboard({ data }: { data: any }) {
         <NavBar />
         <div className="flex flex-row justify-end mt-2 mr-4">
           <Link
+            className="w-fit hover:bg-green-600 action:bg-green-600 rounded py-2 px-4"
+            href="/events/registered"
+            style={{
+              color: "white",
+            }}
+          >
+            Registered Events
+          </Link>
+          <Link
             className="w-fit hover:bg-gray-600 action:bg-gray-600 rounded py-2 px-4"
             href="/profile"
             style={{
@@ -96,11 +105,9 @@ export default function Dashboard({ data }: { data: any }) {
                 className="flex flex-col items-center justify-center h-96 w-96 m-4  rounded-xl shadow-xl"
                 key={`event__${event.id}`}
               >
-                <div
-                className="w-40 h-40 relative"
-                >
+                <div className="w-40 h-40 relative">
                   <Image
-                    className="event_logo"  
+                    className="event_logo"
                     src={`${event.poster_image}.png`}
                     alt={event.name}
                     fill

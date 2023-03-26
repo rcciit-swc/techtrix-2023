@@ -8,9 +8,11 @@ import Head from "next/head";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import localData from "../public/data.json";
-import { Users } from "@/interface/User";
+import { Users } from "@/interface/Users";
 import { ToastContainer, toast } from "react-toastify";
 import { validatePhoneNumber } from "@/utils/validatePhoneNumber";
+import { validateYear } from "@/utils/validateYear";
+import { useRouter } from "next/router";
 
 const Profile = () => {
   const [user, setUser] = useState<User>();
@@ -24,9 +26,12 @@ const Profile = () => {
 
   const [disabled, setDisabled] = useState(true);
 
+  const router = useRouter();
+
   useEffect(() => {
     setDisabled(isFormEmpty());
-  } ,[formData?.college, formData?.year, formData?.name, formData?.phone])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData?.college, formData?.year, formData?.name, formData?.phone]);
 
   useEffect(() => {
     getUser().then((user) => {
@@ -34,14 +39,12 @@ const Profile = () => {
         setUser(user);
         getUserProfile(user.id).then((profiles) => {
           const profile = profiles[0] as Users;
-          // console.log(profile);
           setFormData({
             name: profile.name ?? "",
             phone: profile.phone ?? "",
             college: profile.college ?? "",
             year: profile.year ?? "",
           });
-          // console.log(formData)
         });
       } else {
         redirect("/");
@@ -57,6 +60,7 @@ const Profile = () => {
       setSuggestions: setSuggestions,
     });
   }, 1000);
+
   const formValidation = () => {
     if (isFormEmpty()) {
       toast.error("Please fill all the fields");
@@ -66,8 +70,11 @@ const Profile = () => {
         toast.error("Please enter a valid phone number");
         return false;
       }
+      if (!validateYear(formData.year)) {
+        toast.error("Please enter a valid phone year");
+        return false;
+      }
     }
-    // phone number validity
     return true;
   };
 
@@ -86,6 +93,7 @@ const Profile = () => {
       })
         .then((res) => {
           toast.success("Profile Updated Successfully");
+          router.push("/dashboard");
         })
         .catch((err) => {
           toast.error("Error Updating Profile");
@@ -116,10 +124,10 @@ const Profile = () => {
           <form onSubmit={editProfile}>
             <div className="space-y-12">
               <div className="border-b border-gray-900/10 pb-12">
-                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                <h2 className="text-base p-6 font-semibold leading-7 text-gray-900">
                   Personal Information
                 </h2>
-                <div className="mt-5 grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-6">
+                <div className="mt-5 flex flex-row flex-wrap p-6 gap-y-8 gap-x-6">
                   <div className="sm:col-span-4">
                     <label
                       htmlFor="Name"
@@ -185,7 +193,10 @@ const Profile = () => {
                         }}
                         value={formData?.college}
                       />
-                      <div className="listGroup flex flex-col ring-1 ring-inset mt-2 rounded-md ring-gray-300" style={{width:"179.2px",gap:'10px'}}>
+                      <div
+                        className="listGroup flex flex-col ring-1 ring-inset mt-2 rounded-md ring-gray-300"
+                        style={{ width: "179.2px", gap: "10px" }}
+                      >
                         {suggestions &&
                           suggestions.length > 0 &&
                           suggestions.map((college, pos) => {
@@ -216,7 +227,7 @@ const Profile = () => {
                       htmlFor="Year"
                       className="block text-sm font-medium leading-6 text-gray-900"
                     >
-                      Year
+                      Year of Passing out
                     </label>
                     <div className="mt-2">
                       <input
@@ -237,10 +248,13 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-            <div className="mt-6 flex items-center justify-end gap-x-6">
+            <div className="mt-6 p-6 flex items-center justify-end gap-x-6">
               <button
                 type="button"
                 className="text-sm font-semibold leading-6 text-gray-900"
+                onClick={() => {
+                  router.push("/dashboard");
+                }}
               >
                 Cancel
               </button>

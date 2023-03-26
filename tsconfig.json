@@ -18,6 +18,13 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "interface/User.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "interface/Users.tss",
+    "interface/Participation.ts",
+    "interface/Participation.ts"
+  ],
   "exclude": ["node_modules"]
 }
