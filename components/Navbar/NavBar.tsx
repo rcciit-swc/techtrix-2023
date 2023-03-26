@@ -69,13 +69,16 @@ export default function NavBar() {
                 <Link href="/">Home</Link>
               </li>
               <li className="text-white hover:text-blue-600">
+                <Link href="/events">Events</Link>
+              </li>
+              <li className="text-white hover:text-blue-600">
                 <a href="#">Blog</a>
               </li>
               <li className="text-white hover:text-blue-600">
-                <a href="#">About US</a>
+                <a href="#">About Us</a>
               </li>
               <li className="text-white hover:text-blue-600">
-                <a href="#">Contact US</a>
+                <a href="#">Contact Us</a>
               </li>
               {isLoggedIn ? (
                 <li className="text-white hover:text-blue-600">
