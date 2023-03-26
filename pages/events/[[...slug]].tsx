@@ -36,7 +36,7 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <NavBar/>
+      <NavBar />
       <main
         style={{
           background:
@@ -57,9 +57,7 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
                 sapiente esse aliquid alias. Accusantium rerum culpa esse
                 minima!
               </h2>
-              <Button text="Register Now" 
-                onClick={() => {}}
-              />
+              <Button text="Register Now" onClick={() => {}} />
             </div>
             <div className="my-8">
               <Image
@@ -107,11 +105,7 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
                     </span> */}
                     {/* TODO: Add a button to register for the event */}
                     {/* <span>{event.rules_regulations}</span> */}
-                    <Button
-                    onClick={
-                      () => {}
-                    } 
-                     text="Register Now" />
+                    <Button onClick={() => {}} text="Register Now" />
                   </div>
                   <div className="my-8"></div>
                 </div>

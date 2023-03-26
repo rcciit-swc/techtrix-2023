@@ -15,6 +15,12 @@ const Profile = () => {
 
   const [suggestions, setSuggestions] = useState<Array<any>>([]);
 
+  const debouncer = debounce((value, setSuggestions) => {
+    searchCollege({
+      collegeInput: value,
+      setSuggestions: setSuggestions,
+    });
+  }, 1000);
 
   return (
     <>
@@ -25,13 +31,7 @@ const Profile = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <NavBar />
-      <main
-        // style={{
-        //   background:
-        //     "linear-gradient(146deg, rgba(16,16,16,0.8800770308123249) 39%, rgba(0,0,0,0.9164915966386554) 88%)",
-        // }}
-        className="h-full"
-      >
+      <main className="h-full">
         <div className="flex flex-col w-full justify-center items-center">
           <form>
             <div className="space-y-12">
@@ -39,7 +39,6 @@ const Profile = () => {
                 <h2 className="text-base font-semibold leading-7 text-gray-900">
                   Personal Information
                 </h2>
-
                 <div className="mt-5 grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-6">
                   <div className="sm:col-span-3">
                     <label
@@ -63,7 +62,6 @@ const Profile = () => {
                       />
                     </div>
                   </div>
-
                   <div className="sm:col-span-4">
                     <label
                       htmlFor="phone"
@@ -85,7 +83,6 @@ const Profile = () => {
                       />
                     </div>
                   </div>
-
                   <div className="sm:col-span-3">
                     <label
                       htmlFor="College"
@@ -102,14 +99,7 @@ const Profile = () => {
                         placeholder="College"
                         onChange={(e) => {
                           setFormData({ ...formData, college: e.target.value });
-                          debounce(
-                            () =>
-                            searchCollege({
-                              collegeInput: e.target.value,
-                              setSuggestions: setSuggestions
-                            }),
-                            500
-                          );
+                          debouncer(e.target.value, setSuggestions);
                         }}
                       />
                       <div className="listGroup">
@@ -125,7 +115,7 @@ const Profile = () => {
                                       ...formData,
                                       college: college,
                                     });
-                                    setSuggestions([]); // TODO: Bug in suggestions clearing the array but the ui remains
+                                    setSuggestions([]);
                                   }}
                                   style={{ cursor: "pointer" }}
                                 >
