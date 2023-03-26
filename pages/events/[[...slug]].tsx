@@ -36,6 +36,7 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <NavBar/>
       <main
         style={{
           background:
@@ -44,7 +45,6 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
         className="h-full"
       >
         <div className="h-full flex flex-col w-full justify-center items-center">
-          <NavBar />
           <div className="flex flex-row w-full justify-evenly items-center py-16 flex-wrap">
             <div className="flex flex-col items-center justify-center h-full w-full md:w-1/2 xl:w-1/2 px-16">
               <h1 className="text-6xl font-semibold text-white py-3 text-right">
@@ -57,7 +57,9 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
                 sapiente esse aliquid alias. Accusantium rerum culpa esse
                 minima!
               </h2>
-              <Button text="Register Now" />
+              <Button text="Register Now" 
+                onClick={() => {}}
+              />
             </div>
             <div className="my-8">
               <Image
@@ -105,7 +107,11 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
                     </span> */}
                     {/* TODO: Add a button to register for the event */}
                     {/* <span>{event.rules_regulations}</span> */}
-                    <Button text="Register Now" />
+                    <Button
+                    onClick={
+                      () => {}
+                    } 
+                     text="Register Now" />
                   </div>
                   <div className="my-8"></div>
                 </div>
