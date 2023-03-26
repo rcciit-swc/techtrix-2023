@@ -26,14 +26,15 @@ export async function getServerSideProps() {
 
 export default function Dashboard({ data }: { data: any }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [eventData, setEventData] = useState<any>({});
 
   const router = useRouter();
 
   useEffect(() => {
     isUserEmpty().then((value) => {
       if (value) {
-        // router.push("/profile");
+        router.push("/profile");
       }
     });
     getSession().then((token) => {
@@ -95,16 +96,22 @@ export default function Dashboard({ data }: { data: any }) {
                 className="flex flex-col items-center justify-center h-96 w-96 m-4  rounded-xl shadow-xl"
                 key={`event__${event.id}`}
               >
-                <Image
-                  src={`${event.poster_image}.png`}
-                  alt={event.name}
-                  width={200}
-                  height={200}
-                />
+                <div
+                className="w-40 h-40 relative"
+                >
+                  <Image
+                    className="event_logo"  
+                    src={`${event.poster_image}.png`}
+                    alt={event.name}
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                </div>
                 <h1 className="text-2xl font-bold text-white">{event.name}</h1>
                 <Button
                   text="Register Now"
                   onClick={() => {
+                    setEventData(event);
                     setOpen(!open);
                   }}
                 />
@@ -113,7 +120,7 @@ export default function Dashboard({ data }: { data: any }) {
           })}
         </div>
       </main>
-      <Modal open={open} setOpen={setOpen}></Modal>
+      <Modal open={open} setOpen={setOpen} event={eventData} />
     </>
   );
 }

@@ -6,6 +6,7 @@ import Band from "@/components/Band/Band";
 import AboutUs from "@/components/AboutUs/AboutUs";
 import EventCategories from "@/components/EventCategories/EventCategories";
 import { getData } from "@/utils/getData";
+import Contact from "@/components/Contact/Contact";
 
 export async function getServerSideProps() {
   const data = await Promise.all([
@@ -103,6 +104,7 @@ export default function Home({ data }: { data: any }) {
           angle="6deg"
           dir="right"
         />
+        <Contact />
       </main>
     </>
   );

@@ -31,6 +31,20 @@ export async function getUserProfile(id: string) {
   return users;
 }
 
+export async function checkForUser(email:string)
+{
+  let { data, error } = await supabase.from("users").select("*").eq("email", email);
+
+  if (error) {
+    console.error(error);
+  }
+
+  const users: Users[] = data as Users[];
+  // console.log(users)
+
+  return users;
+}
+
 export async function isUserEmpty() {
   const {
     data: { user },
