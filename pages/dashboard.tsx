@@ -7,7 +7,23 @@ import { useEffect, useState } from "react";
 import { getData } from "@/utils/getData";
 import Image from "next/image";
 import Button from "@/components/Button";
+import { supabase } from "@/utils/SupabaseClient";
+import { useRouter } from "next/router";
 
+async function isUserEmpty() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user !== null) {
+    let { data } = await supabase.from("users").select("*").eq("id", user.id);
+
+    if (data && (data[0]["name"] === null || data[0]["college"] === null)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 export async function getServerSideProps() {
   const data = await Promise.all([
@@ -21,23 +37,29 @@ export async function getServerSideProps() {
   };
 }
 
-export default function Dashboard({ data }: { data: any}) {
+export default function Dashboard({ data }: { data: any }) {
   const [isLoading, setIsLoading] = useState(false);
 
+  const router = useRouter();
+
   useEffect(() => {
+    isUserEmpty().then((value) => {
+      if (value) {
+        router.push("/profile");
+      }
+    });
     getSession().then((token) => {
       setIsLoading(false);
       if (!token) {
         redirect("/");
       }
     });
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return <>Loading</>;
   }
-
-  console.log(data[0].events)
 
   return (
     <>
@@ -55,33 +77,24 @@ export default function Dashboard({ data }: { data: any}) {
         }}
       >
         <NavBar />
-        <div
-        className="flex flex-row flex-wrap items-center justify-center h-full w-full"
-        >
-          {
-            data[0].events.map((event: any) => {
-
-
-
-              return (
-                <div
+        <div className="flex flex-row flex-wrap items-center justify-center h-full w-full">
+          {data[0].events.map((event: any) => {
+            return (
+              <div
                 className="flex flex-col items-center justify-center h-96 w-96 m-4  rounded-xl shadow-xl"
-                  key={event.id}
-                >
-                  <Image
+                key={`event__${event.id}`}
+              >
+                <Image
                   src={`${event.poster_image}.png`}
                   alt={event.name}
                   width={200}
                   height={200}
-                  />
-                  <h1 className="text-2xl font-bold text-white">{event.name}</h1>
-                  <Button
-                  text="Register Now"
-                  />
-                </div>
-              )
-            })
-          }
+                />
+                <h1 className="text-2xl font-bold text-white">{event.name}</h1>
+                <Button text="Register Now" />
+              </div>
+            );
+          })}
         </div>
       </main>
     </>
