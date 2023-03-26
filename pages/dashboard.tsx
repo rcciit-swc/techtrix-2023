@@ -9,6 +9,7 @@ import Image from "next/image";
 import Button from "@/components/Button";
 import { supabase } from "@/utils/SupabaseClient";
 import { useRouter } from "next/router";
+import Modal from "@/components/Modal/Modal";
 
 async function isUserEmpty() {
   const {
@@ -39,13 +40,14 @@ export async function getServerSideProps() {
 
 export default function Dashboard({ data }: { data: any }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const router = useRouter();
 
   useEffect(() => {
     isUserEmpty().then((value) => {
       if (value) {
-        router.push("/profile");
+        // router.push("/profile");
       }
     });
     getSession().then((token) => {
@@ -91,12 +93,18 @@ export default function Dashboard({ data }: { data: any }) {
                   height={200}
                 />
                 <h1 className="text-2xl font-bold text-white">{event.name}</h1>
-                <Button text="Register Now" />
+                <Button
+                  text="Register Now"
+                  onClick={() => {
+                    setOpen(!open);
+                  }}
+                />
               </div>
             );
           })}
         </div>
       </main>
+      <Modal open={open} setOpen={setOpen}></Modal>
     </>
   );
 }
