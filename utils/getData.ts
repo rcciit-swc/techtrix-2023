@@ -1,4 +1,6 @@
+import { Users } from './../interface/User';
 import { supabase } from "./SupabaseClient";
+
 
 export async function getData({
   table,
@@ -9,6 +11,7 @@ export async function getData({
 }) {
   try {
     let { data } = await supabase.from(table).select(select);
+    // console.log(data)
     return { [table]: data };
   } catch (e) {
     console.error(e);
@@ -17,12 +20,15 @@ export async function getData({
 
 export async function getUserProfile(id: string) {
   let { data, error } = await supabase.from("users").select("*").eq("id", id);
-
+  
   if (error) {
     console.error(error);
   }
 
-  return data;
+  const users: Users[] = data as Users[];
+  // console.log(users)
+
+  return users;
 }
 
 export async function isUserEmpty() {
