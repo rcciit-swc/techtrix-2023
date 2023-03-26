@@ -4,24 +4,15 @@ import NavBar from "@/components/Navbar/NavBar";
 import HeroSection from "@/components/HeroSection/HeroSection";
 import Band from "@/components/Band/Band";
 import AboutUs from "@/components/AboutUs/AboutUs";
-import { supabase } from "@/utils/SupabaseClient";
 import EventCategories from "@/components/EventCategories/EventCategories";
-
-async function getEventsData({ table }: { table: string }) {
-  try {
-    let { data } = await supabase.from(table).select("*");
-    return { [table]: data };
-  } catch (e) {
-    console.error(e);
-  }
-}
+import { getData } from "@/utils/getData";
 
 export async function getServerSideProps() {
   const data = await Promise.all([
-    getEventsData({
+    getData({
       table: "events",
     }),
-    getEventsData({
+    getData({
       table: "event_categories",
     }),
   ]);
