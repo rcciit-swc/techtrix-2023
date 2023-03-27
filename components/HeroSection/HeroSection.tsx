@@ -1,8 +1,14 @@
+import { getUser } from "@/utils/getData";
+import { login } from "@/utils/login";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 import data from "../../public/data.json";
 import Button from "../Button";
+
 const HeroSection = () => {
+  const router = useRouter();
+
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <Image
@@ -16,7 +22,17 @@ const HeroSection = () => {
         {data["title"]}
       </h1>
       <h2 className="text-3xl font-bold text-white my-1">{data["date"]}</h2>
-      <Button onClick={() => {}} text="Register Now" />
+      <Button
+        onClick={async () => {
+          const user = await getUser();
+          if (user) {
+            router.push("/dashboard");
+          } else {
+            login();
+          }
+        }}
+        text="Register Now"
+      />
     </div>
   );
 };

@@ -30,12 +30,13 @@ const AboutUs = () => {
             reprehenderit rem, in veritatis molestiae sapiente esse aliquid
             alias. Accusantium rerum culpa esse minima!
           </h2>
-          <a className="button mt-6" 
-          href="https://www.rcciit.org/"
-          target="_blank"
-          rel="noreferrer"
+          <a
+            className="button mt-6"
+            href="https://www.rcciit.org/"
+            target="_blank"
+            rel="noreferrer"
           >
-          Know More About RCCIIT !
+            Know More About RCCIIT !
           </a>
         </div>
         <div className="my-8">

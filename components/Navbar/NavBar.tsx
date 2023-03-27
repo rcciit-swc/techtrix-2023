@@ -13,7 +13,7 @@ export default function NavBar() {
     getSession().then((token) => {
       if (token !== null) setIsLoggedIn(true);
     });
-  });
+  }, []);
 
   return (
     <nav

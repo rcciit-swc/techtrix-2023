@@ -1,42 +1,14 @@
 import NavBar from "@/components/Navbar/NavBar";
 import { Participation } from "@/interface/Participation";
 import { cancelRegistration } from "@/utils/cancelRegistration";
-import { getData, getRegisteredEvents } from "@/utils/getData";
+import { getRegisteredEvents } from "@/utils/getData";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import localData from "../../public/data.json";
 
-export async function getServerSideProps() {
-  const eventData = await Promise.all([
-    getData({
-      table: "events",
-      select: "name, poster_image",
-    }),
-  ]);
-
-  return {
-    props: { eventData },
-  };
-}
-
-const Events = ({ eventData }: { eventData: any }) => {
+const Events = () => {
   const [data, setData] = useState<Participation[]>([]);
-
-  const getEventPoster = (eventName: string) => {
-    let eventPoster = eventData[0].events.find(
-      (event: any) => event.name === eventName
-    ).poster_image;
-    return (
-      <Image
-        className="event_logo"
-        src={`${eventPoster}.png`}
-        alt={`${eventName} Logo`}
-        fill
-        style={{ objectFit: "contain" }}
-      />
-    );
-  };
 
   useEffect(() => {
     getRegisteredEvents({}).then((data) => {
@@ -81,8 +53,15 @@ const Events = ({ eventData }: { eventData: any }) => {
                     key={`event__${index}`}
                   >
                     <div className="w-40 h-40 relative">
-                      {registrationData.events &&
-                        getEventPoster(registrationData.events.name)}
+                      {registrationData.events && (
+                        <Image
+                          className="event_logo"
+                          src={`${registrationData.events.poster_image}.png`}
+                          alt=""
+                          fill
+                          style={{ objectFit: "contain" }}
+                        />
+                      )}
                     </div>
                     <h1 className="text-3xl font-thin text-center text-white dark:text-gray-100">
                       {registrationData.events && registrationData.events.name}
