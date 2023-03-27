@@ -58,7 +58,6 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
                 sapiente esse aliquid alias. Accusantium rerum culpa esse
                 minima!
               </h2>
-              <Button text="Register Now" onClick={() => {}} />
             </div>
             <div className="my-8">
               <Image

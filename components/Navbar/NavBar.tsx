@@ -17,7 +17,7 @@ export default function NavBar() {
 
   return (
     <nav
-      className="w-full bg-transparent shadow"
+      className="w-full bg-transparent shadow fixed z-10"
       style={{
         background:
           "linear-gradient(146deg, rgba(16,16,16,0.8800770308123249) 39%, rgba(0,0,0,0.9164915966386554) 88%)",
@@ -75,10 +75,10 @@ export default function NavBar() {
                 <Link href="/teams">Teams</Link>
               </li> */}
               <li className="text-white hover:text-blue-600">
-                <Link href="#about">About Us</Link>
+                <Link href="/#about">About Us</Link>
               </li>
               <li className="text-white hover:text-blue-600">
-                <Link href="#contact">Contact Us</Link>
+                <Link href="/#contact">Contact Us</Link>
               </li>
               {isLoggedIn ? (
                 <li className="text-white hover:text-blue-600">
