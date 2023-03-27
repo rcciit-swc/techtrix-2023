@@ -58,6 +58,7 @@ export default function Dashboard({ data }: { data: any }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      
       <main
         className="h-full"
         style={{
@@ -66,9 +67,9 @@ export default function Dashboard({ data }: { data: any }) {
         }}
       >
         <NavBar />
-        <div className="flex flex-row justify-end mt-2 mr-4">
+        <div className="flex flex-row justify-end mr-4 ">
           <Link
-            className="w-fit hover:bg-green-600 action:bg-green-600 rounded py-2 px-4"
+            className="w-fit hover:bg-green-600 action:bg-green-600 rounded py-2 px-4 mt-32"
             href="/events/registered"
             style={{
               color: "white",
@@ -77,7 +78,7 @@ export default function Dashboard({ data }: { data: any }) {
             Registered Events
           </Link>
           <Link
-            className="w-fit hover:bg-gray-600 action:bg-gray-600 rounded py-2 px-4"
+            className="w-fit hover:bg-gray-600 action:bg-gray-600 rounded py-2 px-4 mt-32"
             href="/profile"
             style={{
               color: "white",
@@ -86,7 +87,7 @@ export default function Dashboard({ data }: { data: any }) {
             Edit Profile
           </Link>
           <button
-            className="w-fit hover:bg-red-600 action:bg-red-600 rounded py-2 px-4"
+            className="w-fit hover:bg-red-600 action:bg-red-600 rounded py-2 px-4 mt-32"
             style={{
               color: "white",
             }}
