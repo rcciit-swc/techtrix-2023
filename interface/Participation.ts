@@ -16,5 +16,6 @@ export interface Participation {
     id: number;
     name: string;
     poster_image: string;
+    fees: number;
   } /* join with events table through event id */;
 }
