@@ -17,17 +17,35 @@ export async function getServerSideProps({
       props: { data },
     };
   } else {
+    let { data: categoryData } = await supabase
+      .from("event_categories")
+      .select("*")
+      .eq("name", params.slug[0].toUpperCase());
+
     let { data } = await supabase
       .from("events")
       .select("*")
       .eq("category", params.slug[0].toUpperCase());
     return {
-      props: { data: data, category: params.slug[0].toUpperCase() },
+      props: {
+        data: data,
+        categoryData: categoryData,
+        category: params.slug[0].toUpperCase(),
+      },
     };
   }
 }
 
-const Events = ({ data, category }: { data: any[]; category: string }) => {
+const Events = ({
+  data,
+  category,
+  categoryData,
+}: {
+  data: any[];
+  category: string;
+  categoryData: any[];
+}) => {
+  console.log(categoryData);
   return (
     <>
       <Head>
@@ -52,17 +70,19 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
                 {category ? category : "All Events"}
               </h1>
               <h2 className="text-xl  text-white py-2 text-right">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Quisquam corporis, quaerat minima tempore ex tempora
-                exercitationem reprehenderit rem, in veritatis molestiae
-                sapiente esse aliquid alias. Accusantium rerum culpa esse
-                minima!
+                {categoryData
+                  ? categoryData[0].description
+                  : "TECHTRIX is the highly successful annual techno-management of RCC Institute of Information Technology with a footfall of 5,000+ participants from across Kolkata and even other states! The highlights of the fest include Robotics (list of events) and Gaming (list of events)."}
               </h2>
             </div>
             <div className="my-8">
               <Image
                 className="event_logo"
-                src="https://i.imgur.com/3iFfGAP.png"
+                src={`${
+                  categoryData
+                    ? categoryData[0].picture
+                    : "https://i.imgur.com/3iFfGAP"
+                }.png`}
                 alt="techTrix"
                 width={300}
                 height={300}

@@ -86,4 +86,9 @@ body {
   .hero-image {
     background-size: cover !important;
   }
+
+  .band {
+    margin-left: 0 !important;
+    width: 99.9% !important;
+  }
 }

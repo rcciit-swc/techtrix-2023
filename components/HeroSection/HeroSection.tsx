@@ -23,7 +23,7 @@ const HeroSection = () => {
       className="flex flex-col items-center justify-center h-screen hero-image md:items-end"
       style={{
         backgroundImage: "url('https://i.imgur.com/ncNS7lu.png')",
-        backgroundSize: "1300px auto",
+        backgroundSize: "1600px auto",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "left bottom",
       }}
@@ -37,7 +37,7 @@ const HeroSection = () => {
           height={300}
         />
         <h1
-          className="text-5xl font-semibold text-white my-1 "
+          className="text-5xl font-semibold text-white my-1 md:text-9xl"
           style={{
             lineHeight: "0.8",
           }}

@@ -40,7 +40,7 @@ function Band({
       }
     >
       <div
-        className={`bg-${bgColor}`}
+        className={`bg-${bgColor} band`}
         style={{
           display: "flex",
           alignItems: "center",

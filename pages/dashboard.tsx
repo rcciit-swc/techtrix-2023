@@ -98,14 +98,14 @@ export default function Dashboard({ data }: { data: any }) {
         }}
       >
         <NavBar />
-        {showPaymentBtn && (
+        {/* {showPaymentBtn && (
           <Link
             className="button fixed right-10 bottom-10 w-32 h-10"
             href="/events/registered"
           >
             Pay ₹ {amount}
           </Link>
-        )}
+        )} */}
         <div className="flex flex-row justify-end mr-4 ">
           <Link
             className="w-fit hover:bg-green-600 action:bg-green-600 rounded py-2 px-4 mt-32"
@@ -142,7 +142,7 @@ export default function Dashboard({ data }: { data: any }) {
           {data.map((event: Events) => {
             return (
               <div
-                className="flex flex-col items-center justify-center h-96 w-96 m-4  rounded-xl shadow-xl"
+                className="flex flex-col items-center justify-center h-96 w-96 m-4  rounded-xl shadow-2xl"
                 key={`event__${event.id}`}
               >
                 <div className="w-40 h-40 relative">

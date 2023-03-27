@@ -7,6 +7,7 @@ import AboutUs from "@/components/AboutUs/AboutUs";
 import EventCategories from "@/components/EventCategories/EventCategories";
 import { getData } from "@/utils/getData";
 import Contact from "@/components/Contact/Contact";
+import Footer from "@/components/Footer";
 
 export async function getServerSideProps() {
   const data = await Promise.all([
@@ -105,6 +106,7 @@ export default function Home({ data }: { data: any }) {
           dir="right"
         />
         <Contact />
+        <Footer />
       </main>
     </>
   );
