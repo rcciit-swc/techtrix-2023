@@ -28,7 +28,6 @@ export async function getServerSideProps({
 }
 
 const Events = ({ data, category }: { data: any[]; category: string }) => {
-  console.log(data)
   return (
     <>
       <Head>
@@ -37,7 +36,7 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+
       <main
         style={{
           background:
@@ -63,7 +62,7 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
             </div>
             <div className="my-8">
               <Image
-              className="event_logo"
+                className="event_logo"
                 src="https://i.imgur.com/3iFfGAP.png"
                 alt="techTrix"
                 width={300}
@@ -99,15 +98,15 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
               >
                 <div className="flex flex-row w-full justify-evenly items-center py-16 flex-wrap">
                   <div className="flex flex-col items-center justify-center h-full w-full md:w-1/2 xl:w-1/2 px-16">
-                  <div className="w-60 h-60 relative">
-                  <Image
-                    className="event_logo"
-                    src={`${event.poster_image}.png`}
-                    alt={event.name}
-                    fill
-                    style={{ objectFit: "contain" }}
-                  />
-                </div>
+                    <div className="w-60 h-60 relative">
+                      <Image
+                        className="event_logo"
+                        src={`${event.poster_image}.png`}
+                        alt={event.name}
+                        fill
+                        style={{ objectFit: "contain" }}
+                      />
+                    </div>
                     <h1 className="text-6xl font-semibold text-white py-3 text-left">
                       {event.name}
                     </h1>
@@ -116,9 +115,12 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
                       {event.details}
                     </span> */}
                     {/* TODO: Add a button to register for the event */}
-                    <span
-                    className="text-base text-white py-2 text-left"
-                    >Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt sed porro adipisci, sapiente maiores est similique aliquam aliquid exercitationem provident, nulla aut molestiae magni, earum totam. Natus labore a eos.</span>
+                    <span className="text-base text-white py-2 text-left">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Deserunt sed porro adipisci, sapiente maiores est
+                      similique aliquam aliquid exercitationem provident, nulla
+                      aut molestiae magni, earum totam. Natus labore a eos.
+                    </span>
                     <Button onClick={() => {}} text="Register Now" />
                   </div>
                   <div className="my-8"></div>
@@ -127,24 +129,6 @@ const Events = ({ data, category }: { data: any[]; category: string }) => {
             );
           })}
         </section>
-        {/* <Band
-          text={category ? category : "Events"}
-          number={10}
-          bgColor="black"
-          textColor="white"
-          outlineColor="white"
-          angle="6deg"
-          dir="right"
-        />
-        <Band
-          text={category ? category : "Events"}
-          number={10}
-          bgColor="white"
-          textColor="black"
-          outlineColor="black"
-          angle="6deg"
-          dir="left"
-        /> */}
       </main>
     </>
   );

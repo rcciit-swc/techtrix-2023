@@ -11,5 +11,6 @@ export interface Participation {
   team_member_0?: string /* foreign key to users.email */;
   id: string /* primary key */;
   registered_by: string /* foreign key to users.email */;
+  registration_cancelled?: boolean /* whether participant has cancelled registration */;
   events?: { name: string } /* join with events table through event id */;
 }

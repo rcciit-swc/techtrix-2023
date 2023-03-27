@@ -116,6 +116,12 @@ export default function Modal({
                           }}
                         />
                       </div>
+                      {event.type === "TEAM" && (
+                        <p className="text-red-700 mt-4 text-sm">
+                          All the emails should be registered on platform to
+                          continue registration!
+                        </p>
+                      )}
                       <p className="mt-2">
                         {event.type === "TEAM" && (
                           <form

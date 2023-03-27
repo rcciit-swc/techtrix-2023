@@ -28,9 +28,9 @@ const EventCard = ({ Event_categories }: any) => {
       >
         {name}
       </h2>
-          <Link 
-          className="button mt-6"
-          href={`events/${encodeURI(name)}`}>View Events</Link>
+      <Link className="button mt-6" href={`events/${encodeURI(name)}`}>
+        View Events
+      </Link>
     </div>
   );
 };
