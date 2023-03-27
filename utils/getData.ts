@@ -17,6 +17,8 @@ export async function getData({
   }
 }
 
+
+
 export async function getRegisteredEvents({
   select = "*",
 }: {

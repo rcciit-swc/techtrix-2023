@@ -34,6 +34,7 @@ const AboutUs = () => {
         </div>
         <div className="my-8">
           <Image
+            className="event_logo"
             src="https://i.imgur.com/3iFfGAP.png"
             alt="techTrix"
             width={300}

@@ -23,14 +23,14 @@ export default function Modal({
       .fill(0)
       .map((_, index) => {
         return (
-          <div className="sm:col-span-4 mt-1 w-96" key={index}>
+          <div className="sm:col-span-4 mt-1 md:w-96" key={index}>
             <label
               htmlFor="email"
               className="block text-sm font-medium leading-6 text-gray-900"
             >
               {getNumberWithOrdinal(index + 1)} Member Email
             </label>
-            <div className="mt-2">
+            <div className="mt-2 ">
               <input
                 id="email"
                 name="email"
@@ -122,14 +122,14 @@ export default function Modal({
                             className="grid grid-cols-1 gap-y-6 sm:grid-cols-6"
                             onSubmit={handleSubmit}
                           >
-                            <div className="sm:col-span-3 mt-4">
+                            <div className="sm:col-span-3 mt-4 md:w-96">
                               <label
                                 htmlFor="Team Name"
                                 className="block text-sm font-medium leading-6 text-gray-900"
                               >
                                 Team Name
                               </label>
-                              <div className="mt-2 w-96">
+                              <div className="mt-2 ">
                                 <input
                                   type="text"
                                   name="TeamName"

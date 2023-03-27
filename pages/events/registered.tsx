@@ -1,13 +1,42 @@
 import NavBar from "@/components/Navbar/NavBar";
 import { Participation } from "@/interface/Participation";
-import { getRegisteredEvents } from "@/utils/getData";
+import { getData, getRegisteredEvents } from "@/utils/getData";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import localData from "../../public/data.json";
 
-const Events = () => {
+export async function getServerSideProps() {
+  const eventData = await Promise.all([
+    getData({
+      table: "events",
+    }),
+  ]);
+
+  return {
+    props: { eventData },
+  };
+}
+
+const Events = ({ eventData }: { eventData: any }) => {
   const [data, setData] = useState<Participation[]>([]);
+
+  console.log(eventData[0].events);
+
+  const getEventPoster = (eventName: string) => {
+    let eventPoster = eventData[0].events.find(
+      (event: any) => event.name === eventName
+    ).poster_image;
+    return (
+      <Image
+        className="event_logo"
+        src={`${eventPoster}.png`}
+        alt={`${eventName} Logo`}
+        fill
+        style={{ objectFit: "contain" }}
+      />
+    );
+  };
 
   useEffect(() => {
     getRegisteredEvents({}).then((data) => {
@@ -23,7 +52,7 @@ const Events = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <NavBar />
+      
       <main
         style={{
           background:
@@ -31,27 +60,65 @@ const Events = () => {
         }}
         className="h-full"
       >
-        <div className="h-full flex flex-col w-full justify-center items-center">
-          <div className="flex flex-row w-full justify-evenly items-center py-16 flex-wrap">
-            <div className="flex flex-col items-center justify-center h-full w-full md:w-1/2 xl:w-1/2 px-16">
-              <h1 className="text-6xl font-semibold text-white py-3 text-right">
-                Registered Events
-              </h1>
-              <h2 className="text-xl  text-white py-2 text-right">
-                Events you have registered in!
-              </h2>
-            </div>
-            <div className="my-8">
-              <Image
-                src="https://i.imgur.com/3iFfGAP.png"
-                alt="techTrix"
-                width={300}
-                height={300}
-              />
-            </div>
-          </div>
+        <NavBar />
+        <h1 className="text-5xl font-semibold text-center text-white dark:text-gray-100 pt-10">
+          Registered Events
+        </h1>
+        <div className="flex flex-row flex-wrap items-center justify-center h-full w-full">
+          {data.map((registrationData, index) => {
+            return (
+              <div
+                className="flex flex-col items-center justify-center h-96 w-96 m-4  rounded-xl shadow-xl p-4 gap-2"
+                key={`event__${index}`}
+              >
+                <div className="w-40 h-40 relative">
+                  {registrationData.events &&
+                    getEventPoster(registrationData.events.name)}
+                </div>
+                <h1 className="text-3xl font-thin text-center text-white dark:text-gray-100">
+                  {registrationData.events && registrationData.events.name}
+                </h1>
+                {
+                  registrationData.team_name && (
+                    <h1 className="text-xl font-semibold text-center text-white dark:text-gray-100">
+                      <b>Team Name:</b> {registrationData.team_name}
+                    </h1>
+                  )
+                }
+                {
+                  registrationData.team_name && (
+                    <h1 className="text-lg font-bold text-center text-white dark:text-gray-100">
+                      <b>Team Members:</b>
+                    </h1>
+                  )
+                }
+                {
+                  <ul className="text-base font-thin text-center text-white dark:text-gray-100">
+                    {registrationData.team_member_0 && (
+                      <li>{registrationData.team_member_0}</li>
+                    )}
+                    {registrationData.team_member_1 && (
+                      <li>{registrationData.team_member_1}</li>
+                    )}
+                    {registrationData.team_member_2 && (
+                      <li>{registrationData.team_member_2}</li>
+                    )}
+                    {registrationData.team_member_3 && (
+                      <li>{registrationData.team_member_3}</li>
+                    )}
+                    {registrationData.team_member_4 && (
+                      <li>{registrationData.team_member_4}</li>
+                    )}
+                    {registrationData.team_member_5 && (
+                      <li>{registrationData.team_member_5}</li>
+                    )}
+                  </ul>
+                }
+              </div>
+            );
+          })}
         </div>
-        <div className="relative overflow-x-auto">
+        {/* <div className="relative overflow-x-auto">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
@@ -85,13 +152,20 @@ const Events = () => {
                     >
                       {registrationData.team_name}
                     </th>
-                    <td className="px-6 py-4">{`${registrationData.team_member_0}, ${registrationData.team_member_1}, ${registrationData.team_member_2}, ${registrationData.team_member_3}, ${registrationData.team_member_4}, ${registrationData.team_member_5}`}</td>
+                    {
+                      registrationData.team_member_0 && registrationData.team_member_1 && registrationData.team_member_2 && registrationData.team_member_3 && registrationData.team_member_4 && registrationData.team_member_5 ?(
+                        <td className="px-6 py-4">{`${registrationData.team_member_0}, ${registrationData.team_member_1}, ${registrationData.team_member_2}, ${registrationData.team_member_3}, ${registrationData.team_member_4}, ${registrationData.team_member_5}`}</td>
+                      ):(
+                        <td className="px-6 py-4"></td>)
+                    }
+                    
+                    
                   </tr>
                 );
               })}
             </tbody>
           </table>
-        </div>
+        </div> */}
       </main>
     </>
   );

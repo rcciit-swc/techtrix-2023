@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import Button from "../Button";
 
 const EventCard = ({ Event_categories }: any) => {
   const { id, name, picture } = Event_categories;
@@ -27,7 +28,9 @@ const EventCard = ({ Event_categories }: any) => {
       >
         {name}
       </h2>
-      <Link href={`events/${encodeURI(name)}`}>View Events</Link>
+          <Link 
+          className="button mt-6"
+          href={`events/${encodeURI(name)}`}>View Events</Link>
     </div>
   );
 };
