@@ -58,13 +58,13 @@ export default function Dashboard({ data }: { data: any }) {
         }
       }),
       getRegisteredEvents({
-        select: `events(id, fees)`,
+        select: `events(id, fees),registration_cancelled`,
       }).then((data) => {
         let amount = 0;
         if (data) {
           const temp = data.map((item: Participation) => item.events!.id);
           data.forEach((item: Participation) => {
-            amount += item.events!.fees;
+            if (!item.registration_cancelled) amount += item.events!.fees!;
           });
           if (amount > 0) {
             setShowPaymentBtn(true);

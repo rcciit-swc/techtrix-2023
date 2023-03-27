@@ -12,6 +12,10 @@ html {
   font-family: "IBM Plex Mono", monospace;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -76,4 +80,10 @@ html {
 
 .neon:hover {
   color: #a3ebb1;
+}
+
+@media screen and (max-width: 768px) {
+  .hero-image {
+    background-size: cover !important;
+  }
 }

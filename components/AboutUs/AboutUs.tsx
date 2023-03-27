@@ -24,11 +24,23 @@ const AboutUs = () => {
           >
             About Us
           </h1>
-          <h2 className="text-xl  text-white py-2 text-left">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            corporis, quaerat minima tempore ex tempora exercitationem
-            reprehenderit rem, in veritatis molestiae sapiente esse aliquid
-            alias. Accusantium rerum culpa esse minima!
+          <h2 className="text-lg  text-white py-2 text-justify">
+            TECHTRIX is the highly successful annual techno-management of RCC
+            Institute of Information Technology with a footfall of 5,000+
+            participants from across Kolkata and even other states! The
+            highlights of the fest include Robotics (list of events) and Gaming
+            (list of events). And this year, we have yet another wonderous
+            addition- a state-level hackathon for both college and school
+            students. Find more information about{" "}
+            <a
+              className="neon"
+              href="https://sbh.rcciit.org.in/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              ‘Smart Bengal Hackathon 2023’
+            </a>
+            .
           </h2>
           <a
             className="button mt-6"

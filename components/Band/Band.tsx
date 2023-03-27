@@ -46,7 +46,8 @@ function Band({
           alignItems: "center",
           color: `${textColor}`,
           fontSize: "5rem",
-          width: "99.9%",
+          width: "110%",
+          marginLeft: "-5%",
           transform: `rotate(${angle})`,
         }}
       >
