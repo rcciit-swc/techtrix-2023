@@ -60,7 +60,7 @@ const Events = ({ eventData }: { eventData: any }) => {
         className="h-screen"
       >
         <NavBar />
-        <h1 className="text-5xl font-semibold text-center text-white dark:text-gray-100 pt-10">
+        <h1 className="text-5xl font-semibold text-center text-white dark:text-gray-100 pt-32">
           Registered Events
         </h1>
         {data.length === 0 ? (
