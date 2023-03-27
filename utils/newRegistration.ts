@@ -27,7 +27,7 @@ export async function newTeamRegistration({
     });
     if (error) {
       console.error(error);
-      return error;
+      throw error;
     }
     return null;
   } else {

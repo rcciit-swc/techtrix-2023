@@ -2,22 +2,25 @@ import Head from "next/head";
 import localData from "../public/data.json";
 import NavBar from "@/components/Navbar/NavBar";
 import { redirect } from "next/navigation";
-import { getSession } from "@/utils/getSession";
 import { useEffect, useState } from "react";
-import { getData, isUserDetailsEmpty } from "@/utils/getData";
+import {
+  getEvents,
+  getRegisteredEvents,
+  getUser,
+  isUserDetailsEmpty,
+} from "@/utils/getData";
 import Image from "next/image";
 import Button from "@/components/Button";
 import { useRouter } from "next/router";
 import Modal from "@/components/Modal/Modal";
 import Link from "next/link";
 import { signOut } from "@/utils/signOut";
+import { Events } from "@/interface/Events";
+import { Participation } from "@/interface/Participation";
+import { User } from "@supabase/supabase-js";
 
 export async function getServerSideProps() {
-  const data = await Promise.all([
-    getData({
-      table: "events",
-    }),
-  ]);
+  const data = await getEvents();
 
   return {
     props: { data },
@@ -28,21 +31,38 @@ export default function Dashboard({ data }: { data: any }) {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [eventData, setEventData] = useState<any>({});
+  const [user, setUser] = useState<User>();
+
+  //stored event ids of registered events
+  //needed for checking if user has registered for an event or not
+  const [registeredEvents, setRegisteredEvents] = useState<any[]>([]);
 
   const router = useRouter();
 
   useEffect(() => {
-    isUserDetailsEmpty().then((value) => {
-      if (value) {
-        router.push("/profile");
-      }
-    });
-    getSession().then((token) => {
-      setIsLoading(false);
-      if (!token) {
-        redirect("/");
-      }
-    });
+    Promise.all([
+      isUserDetailsEmpty().then((value) => {
+        if (value) {
+          router.push("/profile");
+        }
+      }),
+      getUser().then((user) => {
+        setIsLoading(false);
+        if (user === null) {
+          redirect("/");
+        } else {
+          setUser(user);
+        }
+      }),
+      getRegisteredEvents({
+        select: `events(id)`,
+      }).then((data) => {
+        if (data) {
+          const temp = data.map((item: Participation) => item.events!.id);
+          setRegisteredEvents(temp);
+        }
+      }),
+    ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -100,7 +120,7 @@ export default function Dashboard({ data }: { data: any }) {
           </button>
         </div>
         <div className="flex flex-row flex-wrap items-center justify-center h-full w-full">
-          {data[0].events.map((event: any) => {
+          {data.map((event: Events) => {
             return (
               <div
                 className="flex flex-col items-center justify-center h-96 w-96 m-4  rounded-xl shadow-xl"
@@ -116,19 +136,36 @@ export default function Dashboard({ data }: { data: any }) {
                   />
                 </div>
                 <h1 className="text-2xl font-bold text-white">{event.name}</h1>
-                <Button
-                  text="Register Now"
-                  onClick={() => {
-                    setEventData(event);
-                    setOpen(!open);
-                  }}
-                />
+                {event.multiple_registrations_allowed ||
+                !(
+                  !event.multiple_registrations_allowed &&
+                  registeredEvents.includes(event.id)
+                ) ? (
+                  <Button
+                    text="Pre-Register!"
+                    onClick={() => {
+                      setEventData(event);
+                      setOpen(!open);
+                    }}
+                  />
+                ) : (
+                  <span className="bg-green-700 rounded-sm py-1 px-2 text-white mt-5">
+                    Registered!
+                  </span>
+                )}
               </div>
             );
           })}
         </div>
       </main>
-      <Modal open={open} setOpen={setOpen} event={eventData} />
+      <Modal
+        open={open}
+        setOpen={setOpen}
+        event={eventData}
+        registeredEvents={registeredEvents}
+        setRegisteredEvents={setRegisteredEvents}
+        registeredByEmail={user !== undefined ? user.email : ""}
+      />
     </>
   );
 }

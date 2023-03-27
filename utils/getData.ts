@@ -1,6 +1,7 @@
 import { Participation } from "../interface/Participation";
 import { Users } from "../interface/Users";
 import { supabase } from "./SupabaseClient";
+import { Events } from "../interface/Events";
 
 export async function getData({
   table,
@@ -17,8 +18,20 @@ export async function getData({
   }
 }
 
+export async function getEvents(select: string = "*") {
+  try {
+    let { data } = await supabase.from("events").select(select);
+
+    const events: Events[] = data as unknown as Events[];
+
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export async function getRegisteredEvents({
-  select = "*",
+  select = `id, team_name, team_member_0, team_member_1, team_member_2, team_member_3, team_member_4, team_member_5, transaction_id, transaction_verified, registration_cancelled, events(name, poster_image)`,
 }: {
   select?: string;
 }) {
@@ -27,9 +40,7 @@ export async function getRegisteredEvents({
     if (user) {
       let { data, error } = await supabase
         .from("participation")
-        .select(
-          `id, team_name, team_member_0, team_member_1, team_member_2, team_member_3, team_member_4, team_member_5, transaction_id, transaction_verified, registration_cancelled, events(name, poster_image)`
-        )
+        .select(select)
         .eq("registered_by", user.email);
 
       const participationData: Participation[] =

@@ -13,6 +13,7 @@ export interface Participation {
   registered_by: string /* foreign key to users.email */;
   registration_cancelled?: boolean /* whether participant has cancelled registration */;
   events?: {
+    id: number;
     name: string;
     poster_image: string;
   } /* join with events table through event id */;
