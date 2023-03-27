@@ -11,6 +11,8 @@ export default function Modal({
   open,
   setOpen,
   event,
+  setShowPayment,
+  setAmount,
   registeredEvents,
   setRegisteredEvents,
   registeredByEmail,
@@ -18,6 +20,8 @@ export default function Modal({
   open: boolean;
   setOpen: (value: boolean) => void;
   event: any;
+  setShowPayment: any;
+  setAmount: any;
   /* ID of registered Events
    * Modified after new registration */
   registeredEvents: number[];
@@ -89,6 +93,8 @@ export default function Modal({
         setRegisteredEvents((prev: any) => [...prev, event.id]);
         toast.success("Registration Successful!");
         setOpen(false);
+        setShowPayment(true);
+        setAmount((prev: number) => prev + parseInt(event.fees));
       })
       .catch((err) => {
         toast.error(
@@ -219,6 +225,11 @@ export default function Modal({
                                 }).then(() => {
                                   toast.success("Registration Successful!");
                                   setOpen(false);
+                                  setShowPayment(true);
+                                  setAmount(
+                                    (prev: number) =>
+                                      prev + parseInt(event.fees)
+                                  );
                                   setRegisteredEvents((prev: any) => [
                                     ...prev,
                                     event.id,

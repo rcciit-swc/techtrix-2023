@@ -31,6 +31,9 @@ export default function Dashboard({ data }: { data: any }) {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [eventData, setEventData] = useState<any>({});
+
+  const [amount, setAmount] = useState(0);
+  const [showPaymentBtn, setShowPaymentBtn] = useState(false);
   const [user, setUser] = useState<User>();
 
   //stored event ids of registered events
@@ -87,6 +90,14 @@ export default function Dashboard({ data }: { data: any }) {
         }}
       >
         <NavBar />
+        {showPaymentBtn && (
+          <Link
+            className="button fixed right-10 bottom-10 w-32 h-10"
+            href="/events/registered"
+          >
+            Pay ₹ {amount}
+          </Link>
+        )}
         <div className="flex flex-row justify-end mr-4 ">
           <Link
             className="w-fit hover:bg-green-600 action:bg-green-600 rounded py-2 px-4 mt-32"
@@ -162,6 +173,8 @@ export default function Dashboard({ data }: { data: any }) {
         open={open}
         setOpen={setOpen}
         event={eventData}
+        setShowPayment={setShowPaymentBtn}
+        setAmount={setAmount}
         registeredEvents={registeredEvents}
         setRegisteredEvents={setRegisteredEvents}
         registeredByEmail={user !== undefined ? user.email : ""}
