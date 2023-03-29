@@ -12,13 +12,16 @@ import {
 import Image from "next/image";
 import Button from "@/components/Button";
 import { useRouter } from "next/router";
-import Modal from "@/components/Modal/Modal";
 import Link from "next/link";
 import { signOut } from "@/utils/signOut";
 import { Events } from "@/interface/Events";
 import { Participation } from "@/interface/Participation";
 import { User } from "@supabase/supabase-js";
-import PaymentModal from "@/components/Modal/PaymentModal";
+import dynamic from "next/dynamic";
+
+const Modal = dynamic(() => import("@/components/Modal/Modal"), {
+  loading: () => <></>,
+});
 
 export async function getServerSideProps() {
   const data = await getEvents();
@@ -36,14 +39,13 @@ export default function Dashboard({ data }: { data: any }) {
   const [amount, setAmount] = useState(0);
   const [showPaymentBtn, setShowPaymentBtn] = useState(false);
   const [user, setUser] = useState<User>();
-  const [showPaymentModal, setshowPaymentModal] = useState(false);
 
   //stored event ids of registered events
   //needed for checking if user has registered for an event or not
   const [registeredEvents, setRegisteredEvents] = useState<any[]>([]);
 
   const router = useRouter();
-  const openPaymentModal = () => setshowPaymentModal(true);
+
   useEffect(() => {
     Promise.all([
       isUserDetailsEmpty().then((value) => {
@@ -102,8 +104,15 @@ export default function Dashboard({ data }: { data: any }) {
         <NavBar />
         {showPaymentBtn && (
           <button
+            onClick={() => {
+              router.push({
+                pathname: "/events/registered",
+                query: {
+                  amount: amount,
+                },
+              });
+            }}
             className="button fixed right-10 bottom-10 w-32 h-10"
-            onClick={openPaymentModal}
           >
             Pay ₹ {amount}
           </button>
@@ -111,7 +120,12 @@ export default function Dashboard({ data }: { data: any }) {
         <div className="flex flex-row justify-end mr-4 ">
           <Link
             className="w-fit hover:bg-green-600 action:bg-green-600 rounded py-2 px-4 mt-32"
-            href="/events/registered"
+            href={{
+              pathname: "/events/registered",
+              query: {
+                amount: amount,
+              },
+            }}
             style={{
               color: "white",
             }}
@@ -179,11 +193,6 @@ export default function Dashboard({ data }: { data: any }) {
           })}
         </div>
       </main>
-      <PaymentModal
-        open={showPaymentModal}
-        setOpen={setshowPaymentModal}
-        amount={amount}
-      />
       <Modal
         open={open}
         setOpen={setOpen}

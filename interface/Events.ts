@@ -17,5 +17,6 @@ export interface Events {
   event_categories?: Event_categories;
   multiple_registrations_allowed?: boolean;
   events?: number;
+  fees: number;
   users?: Users;
 }
