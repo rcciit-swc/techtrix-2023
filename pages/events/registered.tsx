@@ -110,6 +110,7 @@ const Events = ({ amount = "0" }: { amount: string }) => {
       }),
     ]);
   }, []);
+  console.log(amount);
 
   return (
     <>
@@ -239,7 +240,7 @@ const Events = ({ amount = "0" }: { amount: string }) => {
                       </>
                     )}
                     {registrationData.transaction_id === null && (
-                      <span className="flex items-center text-white">
+                      <span className=" items-center text-white hidden">
                         <input
                           checked={checked[index]}
                           id="checked-checkbox"
@@ -269,7 +270,7 @@ const Events = ({ amount = "0" }: { amount: string }) => {
             text="Pay Now!"
           />
         </span>
-        <section className="">
+        <section className="pb-10">
           <div className="flex justify-center">
             <button
               onClick={
@@ -350,7 +351,7 @@ const Events = ({ amount = "0" }: { amount: string }) => {
                   })}
                 </div>
               ) : (
-                <span className="text-center flex flex-row flex-wrap items-center mb-4 justify-center text-lg mt-4 text-red-500">
+                <span className="text-center flex flex-row flex-wrap items-center justify-center text-lg mt-4 text-red-500">
                   No team events registered!
                 </span>
               )}

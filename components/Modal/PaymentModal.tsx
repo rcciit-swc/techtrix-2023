@@ -216,9 +216,7 @@ const PaymentModal = ({
                             />
                           </div>
                           <div className="mt-4 flex justify-center">
-                            <span >
-                              UPI ID : 6291080552@kotak
-                            </span>
+                            <span>UPI ID : 6291080552@kotak</span>
                           </div>
                           <form onSubmit={handleSubmit}>
                             <div className="mt-4">
