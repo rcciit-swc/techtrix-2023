@@ -8,17 +8,11 @@ import { validatePhoneNumber } from "@/utils/validatePhoneNumber";
 const PaymentModal = ({
   open,
   setOpen,
-  //   event,
-  //   cancelButtonRef,
-  //   handleSubmit,
   amount,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
-  //   event: any;
-  //   cancelButtonRef: any;
-  //   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  amount: number;
+  amount: string;
 }) => {
   const [transactionID, setTransactionID] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -28,6 +22,7 @@ const PaymentModal = ({
 
   useEffect(() => {
     setDisabled(isFormEmpty());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactionID, phoneNumber, upiID, paymentScreenShot]);
 
   const isFormEmpty = () => {
