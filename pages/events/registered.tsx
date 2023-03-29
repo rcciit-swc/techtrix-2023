@@ -39,6 +39,7 @@ const Events = ({ amount = "0" }: { amount: string }) => {
 
   const [user, setUser] = useState<User | null>(null);
   const [showPaymentModal, setshowPaymentModal] = useState<boolean>(false);
+  const [loadingText, setshowText] = useState<string>("");
 
   // stores all the participation ids of the events to be paid
   const [toBePaid, setToBePaid] = useState<string[]>([]);
@@ -55,6 +56,7 @@ const Events = ({ amount = "0" }: { amount: string }) => {
   async function getTeamRegisteredEvents() {
     setIsteamRegisteredEventsExpanded(!isTeamRegisteredEventsExpanded);
     setIsteamRegisteredEventsLoading(true);
+    setshowText("loading");
     if (user === null) {
       const user = await getUser();
       setUser(user);
@@ -65,6 +67,9 @@ const Events = ({ amount = "0" }: { amount: string }) => {
 
       if (data.length > 0) {
         setTeamRegisteredEvents(data);
+        setIsteamRegisteredEventsLoading(false);
+      } else {
+        setshowText("No events found");
         setIsteamRegisteredEventsLoading(false);
       }
     }
@@ -277,14 +282,14 @@ const Events = ({ amount = "0" }: { amount: string }) => {
                       await getTeamRegisteredEvents();
                     }
               }
-              className="text-white"
+              className="text-white button"
             >
               Team events where you are participating
             </button>
           </div>
           {isTeamRegisteredEventsLoading ? (
             <span className="text-center flex flex-row flex-wrap items-center justify-center text-lg mt-4 text-gray-300">
-              Loading...
+              loading
             </span>
           ) : (
             <>
@@ -344,7 +349,11 @@ const Events = ({ amount = "0" }: { amount: string }) => {
                     );
                   })}
                 </div>
-              ) : null}
+              ) : (
+                <span className="text-center flex flex-row flex-wrap items-center justify-center text-lg mt-4 text-red-500">
+                  No team events registered!
+                </span>
+              )}
             </>
           )}
         </section>
