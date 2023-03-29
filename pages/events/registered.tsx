@@ -46,21 +46,21 @@ const Events = ({ amount }: { amount: string }) => {
       const user = await getUser();
       setUser(user);
     }
-
+    console.log("user", user);
     if (user && teamRegisteredEvents.length === 0) {
       const data = await searchEmailInParticipation(user.email ?? "");
 
       if (data.length > 0) {
         setTeamRegisteredEvents(data);
+        setIsteamRegisteredEventsLoading(false);
       }
     }
-
-    if (teamRegisteredEvents.length > 0) {
-      setIsteamRegisteredEventsLoading(false);
-    }
   }
-
+  console.log(isTeamRegisteredEventsExpanded);
   useEffect(() => {
+    getUser().then((user) => {
+      if (user) setUser(user);
+    });
     getRegisteredEvents({}).then((data) => {
       if (data) setData(data);
     });
@@ -210,9 +210,16 @@ const Events = ({ amount }: { amount: string }) => {
         <section className="">
           <div className="flex justify-center">
             <button
-              onClick={async () => {
-                await getTeamRegisteredEvents();
-              }}
+              onClick={
+                teamRegisteredEvents.length > 0
+                  ? () =>
+                      setIsteamRegisteredEventsExpanded(
+                        !isTeamRegisteredEventsExpanded
+                      )
+                  : async () => {
+                      await getTeamRegisteredEvents();
+                    }
+              }
               className="text-white"
             >
               Team events where you are participating
@@ -224,7 +231,8 @@ const Events = ({ amount }: { amount: string }) => {
             </span>
           ) : (
             <>
-              {teamRegisteredEvents.length > 0 && (
+              {teamRegisteredEvents.length > 0 &&
+              isTeamRegisteredEventsExpanded ? (
                 <div className="flex flex-row flex-wrap items-start justify-center h-auto w-full">
                   {teamRegisteredEvents.map((registrationData, index) => {
                     return (
@@ -279,7 +287,7 @@ const Events = ({ amount }: { amount: string }) => {
                     );
                   })}
                 </div>
-              )}
+              ) : null}
             </>
           )}
         </section>
