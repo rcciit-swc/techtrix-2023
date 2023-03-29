@@ -184,11 +184,12 @@ const Events = () => {
           </>
         )}
         <section className="">
-          <div className="flex justify-content">
+          <div className="flex justify-center">
             <button
               onClick={async () => {
                 await getTeamRegisteredEvents();
               }}
+              className="text-white"
             >
               Team events where you are participating
             </button>
