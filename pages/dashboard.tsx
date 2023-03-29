@@ -17,7 +17,9 @@ import Link from "next/link";
 import { signOut } from "@/utils/signOut";
 import { Events } from "@/interface/Events";
 import { Participation } from "@/interface/Participation";
-import { User } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js"
+import PaymentModal from "@/components/Modal/PaymentModal";
+
 
 export async function getServerSideProps() {
   const data = await getEvents();
@@ -35,13 +37,14 @@ export default function Dashboard({ data }: { data: any }) {
   const [amount, setAmount] = useState(0);
   const [showPaymentBtn, setShowPaymentBtn] = useState(false);
   const [user, setUser] = useState<User>();
-
+  const [showPaymentModal,setshowPaymentModal] = useState(false);
+  
   //stored event ids of registered events
   //needed for checking if user has registered for an event or not
   const [registeredEvents, setRegisteredEvents] = useState<any[]>([]);
 
   const router = useRouter();
-
+  const openPaymentModal = () => setshowPaymentModal(true); 
   useEffect(() => {
     Promise.all([
       isUserDetailsEmpty().then((value) => {
@@ -99,12 +102,12 @@ export default function Dashboard({ data }: { data: any }) {
       >
         <NavBar />
         {showPaymentBtn && (
-          <Link
+          <button
             className="button fixed right-10 bottom-10 w-32 h-10"
-            href="/events/registered"
+            onClick={openPaymentModal}
           >
             Pay ₹ {amount}
-          </Link>
+          </button>
         )}
         <div className="flex flex-row justify-end mr-4 ">
           <Link
@@ -177,6 +180,11 @@ export default function Dashboard({ data }: { data: any }) {
           })}
         </div>
       </main>
+      <PaymentModal
+        open={showPaymentModal}
+        setOpen={setshowPaymentModal}
+        amount={amount}
+      />
       <Modal
         open={open}
         setOpen={setOpen}
