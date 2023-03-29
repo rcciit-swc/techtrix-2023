@@ -5,10 +5,12 @@ export async function newTeamRegistration({
   team_name,
   team_members,
   event_id,
+  valoId=[""],
 }: {
   team_name: string;
   team_members: string[];
   event_id: string;
+  valoId?: string[];
 }) {
   const members: { [key: string]: string } = {};
 
@@ -24,6 +26,7 @@ export async function newTeamRegistration({
       ...members,
       registered_by: user.email,
       event_id: event_id,
+      valorant_id: valoId,
     });
     if (error) {
       console.error(error);

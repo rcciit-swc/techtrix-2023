@@ -30,42 +30,73 @@ export default function Modal({
 }) {
   const [teamName, setTeamName] = useState<string>("");
   const [team, setTeam] = useState<any[]>([""]);
+  const [valoID, setValoID] = useState<any[]>([""]);
 
   const renderFormFields = (size: number) => {
     return Array(size)
       .fill(0)
       .map((_, index) => {
         return (
-          <div
-            className="sm:col-span-4 mt-1 md:w-96"
-            key={`input__field__${index}`}
-          >
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium leading-6 text-gray-900"
+          <>
+            <div
+              className="sm:col-span-4 mt-1 md:w-96"
+              key={`input__field__${index}`}
             >
-              {getNumberWithOrdinal(index + 1)} Member Email
-            </label>
-            <div className="mt-2 ">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                readOnly={index === 0}
-                defaultValue={
-                  registeredByEmail && index === 0 ? registeredByEmail : ""
-                }
-                className="block pl-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder="Email address"
-                required={index <= event.min_team_size - 1}
-                onChange={(e) => {
-                  const newTeam = [...team];
-                  newTeam[index] = e.target.value;
-                  setTeam(newTeam);
-                }}
-              />
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                {getNumberWithOrdinal(index + 1)} Member Email
+              </label>
+              <div className="mt-2 ">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  readOnly={index === 0}
+                  defaultValue={
+                    registeredByEmail && index === 0 ? registeredByEmail : ""
+                  }
+                  className="block pl-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  placeholder="Email address"
+                  required={index <= event.min_team_size - 1}
+                  onChange={(e) => {
+                    const newTeam = [...team];
+                    newTeam[index] = e.target.value;
+                    setTeam(newTeam);
+                  }}
+                />
+              </div>
             </div>
-          </div>
+            {event.name === "Valorant" && (
+              <div
+                className="sm:col-span-4 mt-1 md:w-96"
+                key={`vloid_input__field__${index}`}
+              >
+                <label
+                  htmlFor="ValorantID"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  {getNumberWithOrdinal(index + 1)} Valorant ID
+                </label>
+                <div className="mt-2 ">
+                  <input
+                    id="ValorantID"
+                    name="ValorantID"
+                    type="text"
+                    className="block pl-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder="Valorant ID"
+                    required={index <= event.min_team_size - 1}
+                    onChange={(e) => {
+                      const newId = [...valoID];
+                      newId[index] = e.target.value;
+                      setValoID(newId);
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </>
         );
       });
   };
@@ -76,6 +107,18 @@ export default function Modal({
     team.forEach((email) => {
       emails.add(email);
     });
+
+    if (event.name === "Valorant") {
+      const ids = new Set();
+      valoID.forEach((id) => {
+        ids.add(id);
+      });
+
+      if (ids.size !== valoID.length) {
+        toast.error("Duplicate Valorant IDs are not allowed!");
+        return;
+      }
+    }
 
     if (emails.size !== team.length) {
       toast.error("Duplicate emails are not allowed!");
@@ -88,6 +131,7 @@ export default function Modal({
       team_name: teamName,
       team_members: team,
       event_id: event.id,
+      valoId: valoID,
     })
       .then(() => {
         setRegisteredEvents((prev: any) => [...prev, event.id]);
