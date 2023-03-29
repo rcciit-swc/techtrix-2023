@@ -1,18 +1,34 @@
+import Button from "@/components/Button";
 import NavBar from "@/components/Navbar/NavBar";
 import { Participation } from "@/interface/Participation";
 import { cancelRegistration } from "@/utils/cancelRegistration";
 import { getRegisteredEvents, getUser } from "@/utils/getData";
 import { searchEmailInParticipation } from "@/utils/searchEmailInParticipation";
 import { User } from "@supabase/supabase-js";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import localData from "../../public/data.json";
 
-const Events = () => {
+const PaymentModal = dynamic(() => import("@/components/Modal/PaymentModal"), {
+  loading: () => <></>,
+});
+
+export const getServerSideProps = (context: { query: { amount: string } }) => {
+  return {
+    props: {
+      amount: context.query.amount, //pass it to the page props
+    },
+  };
+};
+
+const Events = ({ amount }: { amount: string }) => {
   const [data, setData] = useState<Participation[]>([]);
 
   const [user, setUser] = useState<User | null>(null);
+
+  const [showPaymentModal, setshowPaymentModal] = useState(false);
 
   // events where user himself has not registered but is present in a team
   const [isTeamRegisteredEventsExpanded, setIsteamRegisteredEventsExpanded] =
@@ -183,6 +199,14 @@ const Events = () => {
             </div>
           </>
         )}
+        <span className="flex flex-row justify-center rounded mt-2 mb-4">
+          <Button
+            onClick={() => {
+              setshowPaymentModal(!showPaymentModal);
+            }}
+            text="Pay Now!"
+          />
+        </span>
         <section className="">
           <div className="flex justify-center">
             <button
@@ -260,6 +284,11 @@ const Events = () => {
           )}
         </section>
       </main>
+      <PaymentModal
+        open={showPaymentModal}
+        setOpen={setshowPaymentModal}
+        amount={amount}
+      />
     </>
   );
 };

@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import Image from "next/image";
 import { validateUPIID } from "@/utils/validateUPIID";
 import { validatePhoneNumber } from "@/utils/validatePhoneNumber";
+import imageCompression from "browser-image-compression";
 
 const PaymentModal = ({
   open,
@@ -24,6 +25,12 @@ const PaymentModal = ({
     setDisabled(isFormEmpty());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactionID, phoneNumber, upiID, paymentScreenShot]);
+
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+  };
 
   const isFormEmpty = () => {
     return (
@@ -64,8 +71,10 @@ const PaymentModal = ({
 
   const handlePaymentScreenShot = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0] && e.target.files.length > 0) {
-      console.log(e.target.files[0]);
-      setPaymentScreenShot(e.target.files[0]);
+      imageCompression(e.target.files[0], options).then((compressedFile) => {
+        console.log(compressedFile);
+        setPaymentScreenShot(compressedFile);
+      });
     }
   };
 
@@ -204,6 +213,7 @@ const PaymentModal = ({
                                 className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                 id="file_input"
                                 type="file"
+                                accept="image/*"
                                 onChange={handlePaymentScreenShot}
                                 required
                               />
