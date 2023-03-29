@@ -1,29 +1,94 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment } from "react";
-import { ToastContainer } from "react-toastify";
+import React, { Fragment,useEffect,useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import Image from "next/image";
+import { validateUPIID } from "@/utils/validateUPIID";
+import { validatePhoneNumber } from "@/utils/validatePhoneNumber";
+
 const PaymentModal = ({
   open,
   setOpen,
-//   event,
-//   cancelButtonRef,
-//   handleSubmit,
-  amount
+  //   event,
+  //   cancelButtonRef,
+  //   handleSubmit,
+  amount,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
-//   event: any;
-//   cancelButtonRef: any;
-//   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  //   event: any;
+  //   cancelButtonRef: any;
+  //   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   amount: number;
 }) => {
+  const [transactionID, setTransactionID] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [upiID, setUpiID] = useState("");
+  const [paymentScreenShot, setPaymentScreenShot] = useState<File>();
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    setDisabled(isFormEmpty())
+  },[transactionID, phoneNumber, upiID, paymentScreenShot])
+
+  const isFormEmpty = () => {
+    return (
+      !transactionID.trim().length ||
+      !phoneNumber.trim().length ||
+      !upiID.trim().length ||
+      !paymentScreenShot
+    );  
+  }
+
+  const formValidation = () => {
+    if(isFormEmpty()){
+      toast.error("Please fill all the fields")
+      return false;
+    }
+    else {
+      if(!validateUPIID(upiID)){
+        toast.error("Please enter a valid UPI ID")
+        return false;
+      } else if(!validatePhoneNumber(phoneNumber)){
+        toast.error("Please enter a valid Phone Number")
+        return false;
+      } 
+    }
+    return true
+  }
+  
+
+  const handleTransactionID = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTransactionID(e.target.value);
+  };
+
+  const handlePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhoneNumber(e.target.value);
+  };
+
+  const handleUpiID = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUpiID(e.target.value);
+  };
+
+  const handlePaymentScreenShot = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0] && e.target.files.length > 0) {
+      console.log(e.target.files[0]);
+			setPaymentScreenShot(e.target.files[0]);
+		}
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if(!formValidation()) return;
+    console.log(transactionID, phoneNumber, upiID, paymentScreenShot);
+  };
+
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
         <Dialog
           as="div"
           className="relative z-10"
-        //   initialFocus={cancelButtonRef}
+          //   initialFocus={cancelButtonRef}
           onClose={setOpen}
         >
           <Transition.Child
@@ -75,29 +140,87 @@ const PaymentModal = ({
                           </div>
                         </Dialog.Title>
                         <Dialog.Description className="mt-2 text-lg text-gray-500">
-                            <div className="w-full flex justify-center">
-                                <Image src={'https://i.imgur.com/81iFuMV.png'} alt={'upiqrcode'} width={200} height={400}/>                            
+                          <div className="w-full flex justify-center">
+                            <Image
+                              src={"https://i.imgur.com/81iFuMV.png"}
+                              alt={"upiqrcode"}
+                              width={200}
+                              height={400}
+                            />
+                          </div>
+                          <form onSubmit={handleSubmit}>
+                            <div className="mt-4">
+                              <label
+                                htmlFor="email"
+                                className="block text-sm font-medium text-gray-700"
+                              >
+                                Transaction ID
+                              </label>
+                              <input
+                                id="email"
+                                name="email"
+                                type="text"
+                                autoComplete="email"
+                                required
+                                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                value={transactionID}
+                                onChange={handleTransactionID}
+                              />
                             </div>
-                            <form>
-                                <div className="mt-4">
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                        Transaction ID
-                                    </label>
-                                        <input
-                                            id="email"
-                                            name="email"
-                                            type="email"
-                                            autoComplete="email"
-                                            required
-                                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        />
-                                </div>
-                                <div className="mt-4">
-
-                                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" >Payment ScreenShot</label>
-<input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file"/>
-                                </div>
-                            </form>
+                            <div className="mt-4">
+                              <label
+                                htmlFor="Phone Number"
+                                className="block text-sm font-medium text-gray-700"
+                              >
+                                Phone Number used during Payment
+                              </label>
+                              <input
+                                id="Phone Number"
+                                name="Phone Number"
+                                type="telephone"
+                                autoComplete="email"
+                                required
+                                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                value={phoneNumber}
+                                onChange={handlePhoneNumber}
+                              />
+                            </div>
+                            <div className="mt-4">
+                              <label
+                                htmlFor="Phone Number"
+                                className="block text-sm font-medium text-gray-700"
+                              >
+                                UPI Id from which the payment is made
+                              </label>
+                              <input
+                                id="Phone Number"
+                                name="Phone Number"
+                                type="telephone"
+                                autoComplete="telephone"
+                                required
+                                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                value={upiID}
+                                onChange={handleUpiID}
+                              />
+                            </div>
+                            <div className="mt-4">
+                              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Payment ScreenShot
+                              </label>
+                              <input
+                                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                id="file_input"
+                                type="file"
+                                onChange={handlePaymentScreenShot}
+                                required
+                              />
+                            </div>
+                            <div className="flex justify-center w-full">
+                              <button type="submit" className="button mt-4">
+                                  Submit
+                              </button>
+                            </div>
+                          </form>
                         </Dialog.Description>
                       </div>
                     </div>
