@@ -8,11 +8,27 @@ import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import localData from "../../public/data.json";
+import dynamic from "next/dynamic";
 
-const Events = () => {
+const PaymentModal = dynamic(() => import("@/components/Modal/PaymentModal"), {
+  loading: () => <></>,
+});
+
+export const getServerSideProps = (context: { query: { amount: any } }) => {
+  console.log(context.query);
+  return {
+    props: {
+      amount: context.query.amount, //pass it to the page props
+    },
+  };
+};
+
+const Events = ({ amount }: { amount: string }) => {
   const [data, setData] = useState<Participation[]>([]);
 
   const [user, setUser] = useState<User | null>(null);
+
+  const [showPaymentModal, setshowPaymentModal] = useState(false);
 
   // events where user himself has not registered but is present in a team
   const [isTeamRegisteredEventsExpanded, setIsteamRegisteredEventsExpanded] =
@@ -252,6 +268,11 @@ const Events = () => {
           )}
         </section>
       </main>
+      <PaymentModal
+        open={showPaymentModal}
+        setOpen={setshowPaymentModal}
+        amount={amount}
+      />
     </>
   );
 };
