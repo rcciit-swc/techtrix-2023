@@ -8,27 +8,11 @@ import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import localData from "../../public/data.json";
-import dynamic from "next/dynamic";
 
-const PaymentModal = dynamic(() => import("@/components/Modal/PaymentModal"), {
-  loading: () => <></>,
-});
-
-export const getServerSideProps = (context: { query: { amount: any } }) => {
-  console.log(context.query);
-  return {
-    props: {
-      amount: context.query.amount, //pass it to the page props
-    },
-  };
-};
-
-const Events = ({ amount }: { amount: string }) => {
+const Events = () => {
   const [data, setData] = useState<Participation[]>([]);
 
   const [user, setUser] = useState<User | null>(null);
-
-  const [showPaymentModal, setshowPaymentModal] = useState(false);
 
   // events where user himself has not registered but is present in a team
   const [isTeamRegisteredEventsExpanded, setIsteamRegisteredEventsExpanded] =
@@ -79,7 +63,12 @@ const Events = ({ amount }: { amount: string }) => {
           background:
             "linear-gradient(146deg, rgba(16,16,16,0.8800770308123249) 39%, rgba(0,0,0,0.9164915966386554) 88%)",
         }}
-        className="h-screen"
+        className={
+          (data && data.length > 0) ||
+          (teamRegisteredEvents && teamRegisteredEvents.length > 0)
+            ? "h-auto"
+            : "h-screen"
+        }
       >
         <NavBar />
         <h1 className="text-5xl font-semibold text-center text-white dark:text-gray-100 pt-32">
@@ -94,7 +83,7 @@ const Events = ({ amount }: { amount: string }) => {
             <span className="text-center flex flex-row flex-wrap items-start justify-center text-lg mt-4 text-gray-300">
               Registration of only unpaid events can be cancelled!
             </span>
-            <div className="flex flex-row flex-wrap items-start justify-center h-screen w-full">
+            <div className="flex flex-row flex-wrap items-start justify-center h-auto w-full">
               {" "}
               {data.map((registrationData, index) => {
                 return (
@@ -195,13 +184,15 @@ const Events = ({ amount }: { amount: string }) => {
           </>
         )}
         <section className="">
-          <button
-            onClick={async () => {
-              await getTeamRegisteredEvents();
-            }}
-          >
-            Team events where you are participating
-          </button>
+          <div className="flex justify-content">
+            <button
+              onClick={async () => {
+                await getTeamRegisteredEvents();
+              }}
+            >
+              Team events where you are participating
+            </button>
+          </div>
           {isTeamRegisteredEventsLoading ? (
             <span className="text-center flex flex-row flex-wrap items-center justify-center text-lg mt-4 text-gray-300">
               Loading...
@@ -209,7 +200,7 @@ const Events = ({ amount }: { amount: string }) => {
           ) : (
             <>
               {teamRegisteredEvents.length > 0 && (
-                <div className="flex flex-row flex-wrap items-start justify-center h-screen w-full">
+                <div className="flex flex-row flex-wrap items-start justify-center h-auto w-full">
                   {teamRegisteredEvents.map((registrationData, index) => {
                     return (
                       <div
@@ -268,11 +259,6 @@ const Events = ({ amount }: { amount: string }) => {
           )}
         </section>
       </main>
-      <PaymentModal
-        open={showPaymentModal}
-        setOpen={setshowPaymentModal}
-        amount={amount}
-      />
     </>
   );
 };
