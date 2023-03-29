@@ -15,6 +15,7 @@ const PaymentModal = ({
   setOpen,
   amount,
   toBePaid,
+  setToBePaid,
   email,
   registeredEvents,
   setRegisteredEvents,
@@ -23,6 +24,7 @@ const PaymentModal = ({
   setOpen: (open: boolean) => void;
   amount: string;
   toBePaid: string[];
+  setToBePaid: (toBePaid: string[]) => void;
   email: string;
   registeredEvents: Participation[];
   setRegisteredEvents: (registeredEvents: Participation[]) => void;

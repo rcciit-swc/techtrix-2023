@@ -13,13 +13,6 @@ export async function updateParticipationPayment({
   transaction_screenshot_file_name: string;
   transaction_id: string;
 }) {
-  console.log(
-    participation_id,
-    phone_number,
-    upi_id,
-    transaction_screenshot_file_name,
-    transaction_id
-  );
   const { data, error } = await supabase
     .from("participation")
     .update({
@@ -30,17 +23,13 @@ export async function updateParticipationPayment({
     })
     .match({
       id: participation_id,
-      //   phone_number: null,
-      //   upi_id: null,
-      //   transaction_screenshot_file_name: null,
-      //   transaction_id: null,
-      //   transaction_verified: false,
+      transaction_verified: false,
     })
-    .select("*");
-
-  console.log(data);
+    .or(
+      "phone_number.is.null, upi_id.is.null, transaction_screenshot_file_name.is.null, transaction_id.is.null"
+    );
 
   if (error) {
-    return error;
+    throw error;
   }
 }

@@ -84,7 +84,15 @@ const Events = ({ amount }: { amount: string }) => {
       getRegisteredEvents({}).then((data) => {
         if (data) {
           setData(data);
-          setChecked(data.map((_) => true));
+
+          // only the events which have not been paid yet should be checked by default
+          setChecked(
+            data.map((item) => {
+              if (item.transaction_id !== null && item.phone_number !== null)
+                return false;
+              return true;
+            })
+          );
         }
       }),
     ]);
@@ -338,6 +346,7 @@ const Events = ({ amount }: { amount: string }) => {
         setOpen={setshowPaymentModal}
         amount={amount}
         toBePaid={toBePaid}
+        setToBePaid={setToBePaid}
         email={user?.email || ""}
         registeredEvents={data}
         setRegisteredEvents={setData}
