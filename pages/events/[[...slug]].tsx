@@ -5,6 +5,8 @@ import { supabase } from "@/utils/SupabaseClient";
 import Head from "next/head";
 import Image from "next/image";
 import localData from "../../public/data.json";
+import DataModal from "@/components/DataModal/DataModal";
+import { useState } from "react";
 
 export async function getServerSideProps({
   params,
@@ -45,7 +47,9 @@ const Events = ({
   category: string;
   categoryData: any[];
 }) => {
-  console.log(categoryData);
+  const [modal, setModal] = useState(false);
+  const [modalData, setModalData] = useState({});
+
   return (
     <>
       <Head>
@@ -108,45 +112,48 @@ const Events = ({
           angle="6deg"
           dir="left"
         />
-        <section>
+        <section className="h-full flex flex-row w-full justify-center items-center flex-wrap mt-10">
           {data.map((event) => {
             return (
               <div
-                key={`events__${event.id}`}
-                className="h-full flex flex-row w-full justify-center items-center"
+                className="flex flex-col items-center justify-center h-full w-[600px] m-10"
+                key={event.id}
               >
-                <div className="flex flex-row w-full justify-evenly items-center py-16 flex-wrap">
-                  <div className="flex flex-col items-center justify-center h-full w-full md:w-1/2 xl:w-1/2 px-16">
-                    <div className="w-60 h-60 relative">
-                      <Image
-                        className="event_logo"
-                        src={`${event.poster_image}.png`}
-                        alt={event.name}
-                        fill
-                        style={{ objectFit: "contain" }}
-                      />
-                    </div>
-                    <h1 className="text-6xl font-semibold text-white py-3 text-left">
-                      {event.name}
-                    </h1>
-                    {/* TODO: details
+                <div className="w-60 h-60 relative">
+                  <Image
+                    className="event_logo"
+                    src={`${event.poster_image}.png`}
+                    alt={event.name}
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                </div>
+                <h1 className="text-4xl font-semibold text-white py-3 text-left">
+                  {event.name}
+                </h1>
+                {/* TODO: details
                      <span className="text-xl  text-white py-2 text-left">
                       {event.details}
                     </span> */}
-                    {/* TODO: Add a button to register for the event */}
-                    <span className="text-base text-white py-2 text-left">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Deserunt sed porro adipisci, sapiente maiores est
-                      similique aliquam aliquid exercitationem provident, nulla
-                      aut molestiae magni, earum totam. Natus labore a eos.
-                    </span>
-                    <Button onClick={() => {}} text="Register Now" />
-                  </div>
-                  <div className="my-8"></div>
-                </div>
+                {/* TODO: Add a button to register for the event */}
+                <span className="text-base text-white py-2 text-left">
+                  {event.details}
+                </span>
+                <Button
+                  onClick={() => {
+                    setModal(true);
+                    setModalData(event);
+                  }}
+                  text="View Details"
+                />
               </div>
             );
           })}
+          <DataModal
+            closeModal={() => setModal(false)}
+            eventData={modalData}
+            showModal={modal}
+          />
         </section>
       </main>
     </>
