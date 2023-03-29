@@ -15,7 +15,15 @@ const PaymentModal = dynamic(() => import("@/components/Modal/PaymentModal"), {
   loading: () => <></>,
 });
 
-export const getServerSideProps = (context: { query: { amount: string } }) => {
+export const getServerSideProps = (context: {
+  query?: { amount?: string };
+}) => {
+  if (context.query === undefined || context.query.amount === undefined) {
+    return {
+      props: {},
+    };
+  }
+
   return {
     props: {
       amount: context.query.amount,
@@ -23,7 +31,7 @@ export const getServerSideProps = (context: { query: { amount: string } }) => {
   };
 };
 
-const Events = ({ amount }: { amount: string }) => {
+const Events = ({ amount = "0" }: { amount: string }) => {
   // all the registered events from participation table
   const [data, setData] = useState<Participation[]>([]);
   // stores the checkbox values for the registered events
@@ -350,6 +358,7 @@ const Events = ({ amount }: { amount: string }) => {
         email={user?.email || ""}
         registeredEvents={data}
         setRegisteredEvents={setData}
+        setChecked={setChecked}
       />
     </>
   );

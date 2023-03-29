@@ -68,7 +68,11 @@ export default function Dashboard({ data }: { data: any }) {
         if (data) {
           const temp = data.map((item: Participation) => item.events!.id);
           data.forEach((item: Participation) => {
-            if (!item.registration_cancelled) amount += item.events!.fees!;
+            if (
+              !item.registration_cancelled &&
+              item.transaction_id !== undefined
+            )
+              amount += item.events!.fees!;
           });
           if (amount > 0) {
             setShowPaymentBtn(true);

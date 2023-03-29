@@ -19,6 +19,7 @@ const PaymentModal = ({
   email,
   registeredEvents,
   setRegisteredEvents,
+  setChecked,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -28,6 +29,7 @@ const PaymentModal = ({
   email: string;
   registeredEvents: Participation[];
   setRegisteredEvents: (registeredEvents: Participation[]) => void;
+  setChecked: (checked: boolean[]) => void;
 }) => {
   const [transactionID, setTransactionID] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -139,6 +141,13 @@ const PaymentModal = ({
       }
 
       setRegisteredEvents(temp);
+
+      setChecked(
+        temp.map((item) => {
+          if (item.transaction_id !== null) return false;
+          return true;
+        })
+      );
 
       setDisabled(false);
       setOpen(false);
