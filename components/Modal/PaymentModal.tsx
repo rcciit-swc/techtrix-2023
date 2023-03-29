@@ -5,15 +5,27 @@ import Image from "next/image";
 import { validateUPIID } from "@/utils/validateUPIID";
 import { validatePhoneNumber } from "@/utils/validatePhoneNumber";
 import imageCompression from "browser-image-compression";
+import { v4 as uuidv4 } from "uuid";
+import { uploadFile } from "@/utils/uploadFile";
+import { updateParticipationPayment } from "@/utils/updateParticipationPayment";
+import { Participation } from "@/interface/Participation";
 
 const PaymentModal = ({
   open,
   setOpen,
   amount,
+  toBePaid,
+  email,
+  registeredEvents,
+  setRegisteredEvents,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
   amount: string;
+  toBePaid: string[];
+  email: string;
+  registeredEvents: Participation[];
+  setRegisteredEvents: (registeredEvents: Participation[]) => void;
 }) => {
   const [transactionID, setTransactionID] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -72,27 +84,69 @@ const PaymentModal = ({
   const handlePaymentScreenShot = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0] && e.target.files.length > 0) {
       imageCompression(e.target.files[0], options).then((compressedFile) => {
-        console.log(compressedFile);
         setPaymentScreenShot(compressedFile);
       });
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!formValidation()) return;
-    console.log(transactionID, phoneNumber, upiID, paymentScreenShot);
+    setDisabled(true);
+
+    if (!formValidation()) {
+      setDisabled(false);
+      return;
+    }
+
+    if (!paymentScreenShot) {
+      throw "payment screenshot appears to be null";
+    }
+
+    const updateTransactionFuncs: any[] = [];
+
+    const screenshot = uuidv4();
+
+    for (let i = 0; i < toBePaid.length; i++) {
+      updateTransactionFuncs.push(
+        await updateParticipationPayment({
+          participation_id: toBePaid[i],
+          transaction_id: transactionID,
+          phone_number: phoneNumber,
+          upi_id: upiID,
+          transaction_screenshot_file_name: screenshot,
+        })
+      );
+    }
+
+    updateTransactionFuncs.push(
+      await uploadFile({
+        file: paymentScreenShot,
+        path: `/transactions/${email}/${screenshot}`,
+      })
+    );
+
+    Promise.all(updateTransactionFuncs).then(() => {
+      toast.success("Payment Successful");
+
+      const temp = [...registeredEvents];
+
+      for (let i = 0; i < temp.length; i++) {
+        if (toBePaid.includes(temp[i].id)) {
+          temp[i].transaction_id = transactionID;
+        }
+      }
+
+      setRegisteredEvents(temp);
+
+      setDisabled(false);
+      setOpen(false);
+    });
   };
 
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-10"
-          //   initialFocus={cancelButtonRef}
-          onClose={setOpen}
-        >
+        <Dialog as="div" className="relative z-10" onClose={setOpen}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -219,7 +273,13 @@ const PaymentModal = ({
                               />
                             </div>
                             <div className="flex justify-center w-full">
-                              <button type="submit" className="button mt-4">
+                              <button
+                                type="submit"
+                                disabled={disabled}
+                                className={`mt-4 text-white px-4 py-2 rounded ${
+                                  disabled ? "bg-lime-300" : "bg-green-800"
+                                }`}
+                              >
                                 Submit
                               </button>
                             </div>

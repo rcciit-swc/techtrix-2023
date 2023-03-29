@@ -18,17 +18,22 @@ const PaymentModal = dynamic(() => import("@/components/Modal/PaymentModal"), {
 export const getServerSideProps = (context: { query: { amount: string } }) => {
   return {
     props: {
-      amount: context.query.amount, //pass it to the page props
+      amount: context.query.amount,
     },
   };
 };
 
 const Events = ({ amount }: { amount: string }) => {
+  // all the registered events from participation table
   const [data, setData] = useState<Participation[]>([]);
+  // stores the checkbox values for the registered events
+  const [checked, setChecked] = useState<boolean[]>([]);
 
   const [user, setUser] = useState<User | null>(null);
+  const [showPaymentModal, setshowPaymentModal] = useState<boolean>(false);
 
-  const [showPaymentModal, setshowPaymentModal] = useState(false);
+  // stores all the participation ids of the events to be paid
+  const [toBePaid, setToBePaid] = useState<string[]>([]);
 
   // events where user himself has not registered but is present in a team
   const [isTeamRegisteredEventsExpanded, setIsteamRegisteredEventsExpanded] =
@@ -46,7 +51,7 @@ const Events = ({ amount }: { amount: string }) => {
       const user = await getUser();
       setUser(user);
     }
-    console.log("user", user);
+
     if (user && teamRegisteredEvents.length === 0) {
       const data = await searchEmailInParticipation(user.email ?? "");
 
@@ -56,14 +61,33 @@ const Events = ({ amount }: { amount: string }) => {
       }
     }
   }
-  console.log(isTeamRegisteredEventsExpanded);
+
+  function showPaymentModalHandler() {
+    const participationIDs: string[] = [];
+
+    for (let i = 0; i < checked.length; i++) {
+      if (checked[i]) {
+        participationIDs.push(data[i].id);
+      }
+    }
+
+    setToBePaid(participationIDs);
+
+    setshowPaymentModal(true);
+  }
+
   useEffect(() => {
-    getUser().then((user) => {
-      if (user) setUser(user);
-    });
-    getRegisteredEvents({}).then((data) => {
-      if (data) setData(data);
-    });
+    Promise.all([
+      getUser().then((user) => {
+        if (user) setUser(user);
+      }),
+      getRegisteredEvents({}).then((data) => {
+        if (data) {
+          setData(data);
+          setChecked(data.map((_) => true));
+        }
+      }),
+    ]);
   }, []);
 
   return (
@@ -193,6 +217,23 @@ const Events = ({ amount }: { amount: string }) => {
                         </button>
                       </>
                     )}
+                    {registrationData.transaction_id === null && (
+                      <span className="flex items-center text-white">
+                        <input
+                          checked={checked[index]}
+                          id="checked-checkbox"
+                          type="checkbox"
+                          onClick={() => {
+                            const newChecked = checked;
+                            newChecked[index] = !newChecked[index];
+                            setChecked([...newChecked]);
+                          }}
+                          value=""
+                          className="w-8 h-8 text-green-700 rounded"
+                        />
+                        <label className="ml-2">Pay now!</label>
+                      </span>
+                    )}
                   </div>
                 );
               })}
@@ -202,7 +243,7 @@ const Events = ({ amount }: { amount: string }) => {
         <span className="flex flex-row justify-center rounded mt-2 mb-4">
           <Button
             onClick={() => {
-              setshowPaymentModal(!showPaymentModal);
+              showPaymentModalHandler();
             }}
             text="Pay Now!"
           />
@@ -296,6 +337,10 @@ const Events = ({ amount }: { amount: string }) => {
         open={showPaymentModal}
         setOpen={setshowPaymentModal}
         amount={amount}
+        toBePaid={toBePaid}
+        email={user?.email || ""}
+        registeredEvents={data}
+        setRegisteredEvents={setData}
       />
     </>
   );
