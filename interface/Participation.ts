@@ -12,6 +12,7 @@ export interface Participation {
   id: string /* primary key */;
   registered_by: string /* foreign key to users.email */;
   registration_cancelled?: boolean /* whether participant has cancelled registration */;
+  valorant_id?: string[];
   events?: {
     id: number;
     name: string;
