@@ -23,8 +23,6 @@ const Events = () => {
     Participation[]
   >([]);
 
-  // console.log("teamRegisteredEvents", teamRegisteredEvents)
-
   async function getTeamRegisteredEvents() {
     setIsteamRegisteredEventsExpanded(!isTeamRegisteredEventsExpanded);
     setIsteamRegisteredEventsLoading(true);
@@ -35,7 +33,6 @@ const Events = () => {
     console.log("user", user);
     if (user && teamRegisteredEvents.length === 0) {
       const data = await searchEmailInParticipation(user.email ?? "");
-      // console.log(data)
 
       if (data.length > 0) {
         setTeamRegisteredEvents(data);
@@ -43,7 +40,6 @@ const Events = () => {
       }
     }
   }
-  // console.log("teamRegisteredEvents", teamRegisteredEvents);
   console.log(isTeamRegisteredEventsExpanded);
   useEffect(() => {
     getUser().then((user) => {
@@ -191,11 +187,11 @@ const Events = () => {
           <div className="flex justify-center">
             <button
               onClick={
-                teamRegisteredEvents.length > 0 ?
-                () =>
-                    setIsteamRegisteredEventsExpanded(
-                      !isTeamRegisteredEventsExpanded
-                    )
+                teamRegisteredEvents.length > 0
+                  ? () =>
+                      setIsteamRegisteredEventsExpanded(
+                        !isTeamRegisteredEventsExpanded
+                      )
                   : async () => {
                       await getTeamRegisteredEvents();
                     }
@@ -211,7 +207,8 @@ const Events = () => {
             </span>
           ) : (
             <>
-              {teamRegisteredEvents.length > 0 && isTeamRegisteredEventsExpanded ? (
+              {teamRegisteredEvents.length > 0 &&
+              isTeamRegisteredEventsExpanded ? (
                 <div className="flex flex-row flex-wrap items-start justify-center h-auto w-full">
                   {teamRegisteredEvents.map((registrationData, index) => {
                     return (
@@ -265,7 +262,7 @@ const Events = () => {
                       </div>
                     );
                   })}
-                </div> 
+                </div>
               ) : null}
             </>
           )}
