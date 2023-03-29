@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment,useEffect,useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import Image from "next/image";
 import { validateUPIID } from "@/utils/validateUPIID";
@@ -27,8 +27,8 @@ const PaymentModal = ({
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    setDisabled(isFormEmpty())
-  },[transactionID, phoneNumber, upiID, paymentScreenShot])
+    setDisabled(isFormEmpty());
+  }, [transactionID, phoneNumber, upiID, paymentScreenShot]);
 
   const isFormEmpty = () => {
     return (
@@ -36,26 +36,24 @@ const PaymentModal = ({
       !phoneNumber.trim().length ||
       !upiID.trim().length ||
       !paymentScreenShot
-    );  
-  }
+    );
+  };
 
   const formValidation = () => {
-    if(isFormEmpty()){
-      toast.error("Please fill all the fields")
+    if (isFormEmpty()) {
+      toast.error("Please fill all the fields");
       return false;
-    }
-    else {
-      if(!validateUPIID(upiID)){
-        toast.error("Please enter a valid UPI ID")
+    } else {
+      if (!validateUPIID(upiID)) {
+        toast.error("Please enter a valid UPI ID");
         return false;
-      } else if(!validatePhoneNumber(phoneNumber)){
-        toast.error("Please enter a valid Phone Number")
+      } else if (!validatePhoneNumber(phoneNumber)) {
+        toast.error("Please enter a valid Phone Number");
         return false;
-      } 
+      }
     }
-    return true
-  }
-  
+    return true;
+  };
 
   const handleTransactionID = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTransactionID(e.target.value);
@@ -72,13 +70,13 @@ const PaymentModal = ({
   const handlePaymentScreenShot = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0] && e.target.files.length > 0) {
       console.log(e.target.files[0]);
-			setPaymentScreenShot(e.target.files[0]);
-		}
+      setPaymentScreenShot(e.target.files[0]);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(!formValidation()) return;
+    if (!formValidation()) return;
     console.log(transactionID, phoneNumber, upiID, paymentScreenShot);
   };
 
@@ -217,7 +215,7 @@ const PaymentModal = ({
                             </div>
                             <div className="flex justify-center w-full">
                               <button type="submit" className="button mt-4">
-                                  Submit
+                                Submit
                               </button>
                             </div>
                           </form>
