@@ -350,7 +350,7 @@ const Events = ({ amount = "0" }: { amount: string }) => {
                   })}
                 </div>
               ) : (
-                <span className="text-center flex flex-row flex-wrap items-center justify-center text-lg mt-4 text-red-500">
+                <span className="text-center flex flex-row flex-wrap items-center mb-4 justify-center text-lg mt-4 text-red-500">
                   No team events registered!
                 </span>
               )}

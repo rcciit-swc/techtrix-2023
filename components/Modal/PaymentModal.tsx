@@ -209,11 +209,16 @@ const PaymentModal = ({
                         <Dialog.Description className="mt-2 text-lg text-gray-500">
                           <div className="w-full flex justify-center">
                             <Image
-                              src={"https://i.imgur.com/81iFuMV.png"}
+                              src={"https://i.imgur.com/sNEScWJ.jpg"}
                               alt={"upiqrcode"}
-                              width={200}
-                              height={400}
+                              width={500}
+                              height={700}
                             />
+                          </div>
+                          <div className="mt-4 flex justify-center">
+                            <span >
+                              UPI ID : 6291080552@kotak
+                            </span>
                           </div>
                           <form onSubmit={handleSubmit}>
                             <div className="mt-4">
@@ -288,7 +293,7 @@ const PaymentModal = ({
                                 type="submit"
                                 disabled={disabled}
                                 className={`mt-4 text-white px-4 py-2 rounded ${
-                                  disabled ? "bg-lime-300" : "bg-green-800"
+                                  disabled ? "bg-gray-200 " : "bg-green-800"
                                 }`}
                               >
                                 Submit
