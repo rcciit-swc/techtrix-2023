@@ -79,16 +79,13 @@ export default function Dashboard({ data }: { data: any }) {
         }
       }),
       getRegisteredEvents({
-        select: `events(id, fees),registration_cancelled`,
+        select: `events(id, fees),registration_cancelled,transaction_id`,
       }).then((data) => {
         let amount = 0;
         if (data) {
           const temp = data.map((item: Participation) => item.events!.id);
           data.forEach((item: Participation) => {
-            if (
-              !item.registration_cancelled &&
-              item.transaction_id !== undefined
-            )
+            if (!item.registration_cancelled && item.transaction_id === null)
               amount += item.events!.fees!;
           });
           if (amount > 0) {
@@ -105,10 +102,6 @@ export default function Dashboard({ data }: { data: any }) {
   function checkIfParticipatedInEvent(id: number) {
     const tempEventId = participatedEvents.map((item) => item.event_id);
     return tempEventId.includes(id);
-
-    // return participatedEvents.some((item) => {
-    //   item.event_id === id;
-    // });
   }
 
   if (isLoading) {
@@ -195,27 +188,10 @@ export default function Dashboard({ data }: { data: any }) {
                   />
                 </div>
                 <h1 className="text-2xl font-bold text-white">{event.name}</h1>
-                {/* {event.multiple_registrations_allowed ||
-                !(
-                  !event.multiple_registrations_allowed &&
-                  registeredEvents.includes(event.id)
-                ) ? (
-                  <Button
-                    text="Pre-Register!"
-                    onClick={() => {
-                      setEventData(event);
-                      setOpen(!open);
-                    }}
-                  />
-                ) : (
-                  <span className="bg-green-700 rounded-sm py-1 px-2 text-white mt-5">
-                    Registered!
-                  </span>
-                )} */}
                 {checkIfParticipatedInEvent(event.id) ? (
                   event.multiple_registrations_allowed ? (
                     <Button
-                      text="Pre-Register!"
+                      text="Register!"
                       onClick={() => {
                         setEventData(event);
                         setOpen(!open);
@@ -228,7 +204,7 @@ export default function Dashboard({ data }: { data: any }) {
                   )
                 ) : (
                   <Button
-                    text="Pre-Register!"
+                    text="Register!"
                     onClick={() => {
                       setEventData(event);
                       setOpen(!open);

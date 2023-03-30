@@ -68,9 +68,9 @@ export default function NavBar() {
               <li className="text-white hover:text-blue-600">
                 <Link href="/">Home</Link>
               </li>
-              <li className="text-white hover:text-blue-600">
+              {/* <li className="text-white hover:text-blue-600">
                 <Link href="/events">Events</Link>
-              </li>
+              </li> */}
               {/* <li className="text-white hover:text-blue-600">
                 <Link href="/teams">Teams</Link>
               </li> */}

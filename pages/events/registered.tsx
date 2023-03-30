@@ -15,6 +15,13 @@ const PaymentModal = dynamic(() => import("@/components/Modal/PaymentModal"), {
   loading: () => <></>,
 });
 
+const LoadingSpinner = dynamic(
+  () => import("@/components/LoadingSpinner/LoadingSpinner"),
+  {
+    loading: () => <></>,
+  }
+);
+
 const Events = () => {
   // all the registered events from participation table
   const [data, setData] = useState<Participation[]>([]);
@@ -23,7 +30,6 @@ const Events = () => {
 
   const [user, setUser] = useState<User | null>(null);
   const [showPaymentModal, setshowPaymentModal] = useState<boolean>(false);
-  const [loadingText, setshowText] = useState<string>("");
 
   const [amount, setAmount] = useState<number>(0);
 
@@ -36,26 +42,27 @@ const Events = () => {
   const [isTeamRegisteredEventsLoading, setIsteamRegisteredEventsLoading] =
     useState(false);
   const [teamRegisteredEvents, setTeamRegisteredEvents] = useState<
-    Participation[]
-  >([]);
+    Participation[] | undefined
+  >(undefined);
 
   async function getTeamRegisteredEvents() {
     setIsteamRegisteredEventsExpanded(!isTeamRegisteredEventsExpanded);
     setIsteamRegisteredEventsLoading(true);
-    setshowText("loading");
     if (user === null) {
       const user = await getUser();
       setUser(user);
     }
 
-    if (user && teamRegisteredEvents.length === 0) {
+    if (user) {
       const data = await searchEmailInParticipation(user.email ?? "");
 
       if (data.length > 0) {
         setTeamRegisteredEvents(data);
         setIsteamRegisteredEventsLoading(false);
+
+        // TODO: not working properly
+        window.scrollBy(0, 400);
       } else {
-        setshowText("No events found");
         setIsteamRegisteredEventsLoading(false);
       }
     }
@@ -303,11 +310,12 @@ const Events = () => {
           <div className="flex justify-center">
             <button
               onClick={
-                teamRegisteredEvents.length > 0
-                  ? () =>
-                      setIsteamRegisteredEventsExpanded(
-                        !isTeamRegisteredEventsExpanded
-                      )
+                teamRegisteredEvents && teamRegisteredEvents.length > 0
+                  ? () => {
+                      if (!isTeamRegisteredEventsExpanded) {
+                        setIsteamRegisteredEventsExpanded(true);
+                      }
+                    }
                   : async () => {
                       await getTeamRegisteredEvents();
                     }
@@ -318,12 +326,13 @@ const Events = () => {
             </button>
           </div>
           {isTeamRegisteredEventsLoading ? (
-            <span className="text-center flex flex-row flex-wrap items-center justify-center text-lg mt-4 text-gray-300">
-              loading
-            </span>
+            <div className="flex flex-row justify-center">
+              <LoadingSpinner />
+            </div>
           ) : (
             <>
-              {teamRegisteredEvents.length > 0 &&
+              {teamRegisteredEvents &&
+              teamRegisteredEvents.length > 0 &&
               isTeamRegisteredEventsExpanded ? (
                 <div className="flex flex-row flex-wrap items-start justify-center h-auto w-full">
                   {teamRegisteredEvents.map((registrationData, index) => {
@@ -381,7 +390,10 @@ const Events = () => {
                 </div>
               ) : (
                 <span className="text-center flex flex-row flex-wrap items-center justify-center text-lg mt-4 text-red-500">
-                  No team events registered!
+                  {teamRegisteredEvents === undefined ||
+                  teamRegisteredEvents.length !== 0
+                    ? ""
+                    : "No team events registered!"}
                 </span>
               )}
             </>
@@ -392,6 +404,7 @@ const Events = () => {
         open={showPaymentModal}
         setOpen={setshowPaymentModal}
         amount={amount}
+        setAmount={setAmount}
         toBePaid={toBePaid}
         setToBePaid={setToBePaid}
         email={user?.email || ""}
