@@ -18,6 +18,12 @@ import { Events } from "@/interface/Events";
 import { Participation } from "@/interface/Participation";
 import { User } from "@supabase/supabase-js";
 import dynamic from "next/dynamic";
+import { supabase } from "@/utils/SupabaseClient";
+
+interface ParticipatedEvents {
+  registered_by: string;
+  event_id: number;
+}
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   loading: () => <></>,
@@ -44,6 +50,10 @@ export default function Dashboard({ data }: { data: any }) {
   //needed for checking if user has registered for an event or not
   const [registeredEvents, setRegisteredEvents] = useState<any[]>([]);
 
+  const [participatedEvents, setParticipatedEvents] = useState<
+    ParticipatedEvents[]
+  >([]);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -59,6 +69,13 @@ export default function Dashboard({ data }: { data: any }) {
           redirect("/");
         } else {
           setUser(user);
+          supabase
+            .rpc("search_email_in_registered_event", {
+              email: user.email,
+            })
+            .then((val) => {
+              setParticipatedEvents(val.data);
+            });
         }
       }),
       getRegisteredEvents({
@@ -84,6 +101,15 @@ export default function Dashboard({ data }: { data: any }) {
     ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function checkIfParticipatedInEvent(id: number) {
+    const tempEventId = participatedEvents.map((item) => item.event_id);
+    return tempEventId.includes(id);
+
+    // return participatedEvents.some((item) => {
+    //   item.event_id === id;
+    // });
+  }
 
   if (isLoading) {
     return <>Loading</>;
@@ -169,7 +195,7 @@ export default function Dashboard({ data }: { data: any }) {
                   />
                 </div>
                 <h1 className="text-2xl font-bold text-white">{event.name}</h1>
-                {event.multiple_registrations_allowed ||
+                {/* {event.multiple_registrations_allowed ||
                 !(
                   !event.multiple_registrations_allowed &&
                   registeredEvents.includes(event.id)
@@ -185,6 +211,29 @@ export default function Dashboard({ data }: { data: any }) {
                   <span className="bg-green-700 rounded-sm py-1 px-2 text-white mt-5">
                     Registered!
                   </span>
+                )} */}
+                {checkIfParticipatedInEvent(event.id) ? (
+                  event.multiple_registrations_allowed ? (
+                    <Button
+                      text="Pre-Register!"
+                      onClick={() => {
+                        setEventData(event);
+                        setOpen(!open);
+                      }}
+                    />
+                  ) : (
+                    <span className="bg-green-700 rounded-sm py-1 px-2 text-white mt-5">
+                      Registered!
+                    </span>
+                  )
+                ) : (
+                  <Button
+                    text="Pre-Register!"
+                    onClick={() => {
+                      setEventData(event);
+                      setOpen(!open);
+                    }}
+                  />
                 )}
               </div>
             );
