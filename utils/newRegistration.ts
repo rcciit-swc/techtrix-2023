@@ -5,7 +5,7 @@ export async function newTeamRegistration({
   team_name,
   team_members,
   event_id,
-  valoId=[""],
+  valoId = [""],
 }: {
   team_name: string;
   team_members: string[];

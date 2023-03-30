@@ -111,9 +111,6 @@ export default function Dashboard({ data }: { data: any }) {
             onClick={() => {
               router.push({
                 pathname: "/events/registered",
-                query: {
-                  amount: amount,
-                },
               });
             }}
             className="button fixed right-10 bottom-10 w-32 h-10"
@@ -126,9 +123,6 @@ export default function Dashboard({ data }: { data: any }) {
             className="w-fit hover:bg-green-600 action:bg-green-600 rounded py-2 px-4 mt-32"
             href={{
               pathname: "/events/registered",
-              query: {
-                amount: amount,
-              },
             }}
             style={{
               color: "white",

@@ -15,23 +15,7 @@ const PaymentModal = dynamic(() => import("@/components/Modal/PaymentModal"), {
   loading: () => <></>,
 });
 
-export const getServerSideProps = (context: {
-  query?: { amount?: string };
-}) => {
-  if (context.query === undefined || context.query.amount === undefined) {
-    return {
-      props: {},
-    };
-  }
-
-  return {
-    props: {
-      amount: context.query.amount,
-    },
-  };
-};
-
-const Events = ({ amount = "0" }: { amount: string }) => {
+const Events = () => {
   // all the registered events from participation table
   const [data, setData] = useState<Participation[]>([]);
   // stores the checkbox values for the registered events
@@ -40,6 +24,8 @@ const Events = ({ amount = "0" }: { amount: string }) => {
   const [user, setUser] = useState<User | null>(null);
   const [showPaymentModal, setshowPaymentModal] = useState<boolean>(false);
   const [loadingText, setshowText] = useState<string>("");
+
+  const [amount, setAmount] = useState<number>(0);
 
   // stores all the participation ids of the events to be paid
   const [toBePaid, setToBePaid] = useState<string[]>([]);
@@ -106,11 +92,45 @@ const Events = ({ amount = "0" }: { amount: string }) => {
               return true;
             })
           );
+
+          let tempAmount = 0;
+
+          data.forEach((item: Participation) => {
+            if (!item.registration_cancelled && item.transaction_id === null) {
+              tempAmount += item.events!.fees!;
+            }
+          });
+          setAmount(tempAmount);
         }
       }),
     ]);
   }, []);
-  console.log(amount);
+
+  function handleCheckEvent(index: number) {
+    // temp variable for manipulating checked array
+    const newChecked = checked;
+
+    newChecked[index] = !newChecked[index];
+    setChecked([...newChecked]);
+
+    // calculates new amount when a checkbox is checked
+    const tempData = [...data];
+    if (!newChecked[index]) {
+      setAmount(amount - tempData[index]!.events!.fees ?? 0);
+    } else {
+      setAmount(amount + tempData[index]!.events!.fees ?? 0);
+    }
+  }
+
+  function handleCancelRegistration(index: number, fees: number) {
+    const newData = data;
+    newData[index].registration_cancelled = false;
+    setData([...newData]);
+
+    if (checked[index]) {
+      setAmount(amount + fees);
+    }
+  }
 
   return (
     <>
@@ -211,6 +231,12 @@ const Events = ({ amount = "0" }: { amount: string }) => {
                               const newData = data;
                               newData[index].registration_cancelled = true;
                               setData([...newData]);
+
+                              if (checked[index]) {
+                                setAmount(
+                                  amount - registrationData!.events!.fees
+                                );
+                              }
                             });
                           }}
                         >
@@ -228,9 +254,10 @@ const Events = ({ amount = "0" }: { amount: string }) => {
                               participation_id: registrationData.id,
                               cancel: false,
                             }).then(() => {
-                              const newData = data;
-                              newData[index].registration_cancelled = false;
-                              setData([...newData]);
+                              handleCancelRegistration(
+                                index,
+                                registrationData!.events!.fees
+                              );
                             });
                           }}
                           className="bg-green-700 text-white rounded py-2 px-4 hover:bg-green-800 action:bg-green-800"
@@ -239,37 +266,39 @@ const Events = ({ amount = "0" }: { amount: string }) => {
                         </button>
                       </>
                     )}
-                    {registrationData.transaction_id === null && (
-                      <span className=" items-center text-white hidden">
-                        <input
-                          checked={checked[index]}
-                          id="checked-checkbox"
-                          type="checkbox"
-                          onClick={() => {
-                            const newChecked = checked;
-                            newChecked[index] = !newChecked[index];
-                            setChecked([...newChecked]);
-                          }}
-                          value=""
-                          className="w-8 h-8 text-green-700 rounded"
-                        />
-                        <label className="ml-2">Pay now!</label>
-                      </span>
-                    )}
+                    {/* remove checkbox if registration is already cancelled */}
+                    {registrationData.transaction_id === null &&
+                      registrationData.registration_cancelled === false && (
+                        <span className="flex items-center text-white">
+                          <input
+                            defaultChecked={checked[index]}
+                            id="checked-checkbox"
+                            type="checkbox"
+                            onClick={() => {
+                              handleCheckEvent(index);
+                            }}
+                            value=""
+                            className="w-8 h-8 text-green-700 rounded"
+                          />
+                          <label className="ml-2">Pay now!</label>
+                        </span>
+                      )}
                   </div>
                 );
               })}
             </div>
           </>
         )}
-        <span className="flex flex-row justify-center rounded mt-2 mb-4">
-          <Button
-            onClick={() => {
-              showPaymentModalHandler();
-            }}
-            text="Pay Now!"
-          />
-        </span>
+        {amount !== 0 && (
+          <span className="flex flex-row justify-center rounded mt-2 mb-4">
+            <Button
+              onClick={() => {
+                showPaymentModalHandler();
+              }}
+              text={`Pay ₹${amount}!`}
+            />
+          </span>
+        )}
         <section className="pb-10">
           <div className="flex justify-center">
             <button

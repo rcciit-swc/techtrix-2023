@@ -10,7 +10,6 @@ const DataModal = ({
   eventData: any;
   closeModal: any;
 }) => {
-
   const regIconLink = "https://img.icons8.com/fluency/48/null/money-yours";
 
   return (
@@ -44,16 +43,14 @@ const DataModal = ({
                 Close
               </button>
             </div>
-            <p
-            className="text-base text-white py-2 text-left px-6 flex flex-row"
-            >
-            <img
-							style={{marginRight: '10px' }}
-							src={`${regIconLink}.png`}
-							alt="money"
-              width={20}
-              height={20}
-						/>
+            <p className="text-base text-white py-2 text-left px-6 flex flex-row">
+              <img
+                style={{ marginRight: "10px" }}
+                src={`${regIconLink}.png`}
+                alt="money"
+                width={20}
+                height={20}
+              />
               <b>Registration Fees :</b> ₹ {eventData.fees}
             </p>
             <div className="w-full h-96 flex " style={{ overflowY: "scroll" }}>

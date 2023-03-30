@@ -23,7 +23,7 @@ const PaymentModal = ({
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
-  amount: string;
+  amount: number;
   toBePaid: string[];
   setToBePaid: (toBePaid: string[]) => void;
   email: string;
