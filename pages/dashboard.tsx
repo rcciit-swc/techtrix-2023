@@ -19,11 +19,7 @@ import { Participation } from "@/interface/Participation";
 import { User } from "@supabase/supabase-js";
 import dynamic from "next/dynamic";
 import { supabase } from "@/utils/SupabaseClient";
-
-interface ParticipatedEvents {
-  registered_by: string;
-  event_id: number;
-}
+import { ParticipatedEvents } from "@/interface/ParticipatedEvents";
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   loading: () => <></>,
@@ -223,6 +219,8 @@ export default function Dashboard({ data }: { data: any }) {
         setShowPayment={setShowPaymentBtn}
         setAmount={setAmount}
         registeredEvents={registeredEvents}
+        participatedEvents={participatedEvents}
+        setParticipatedEvents={setParticipatedEvents}
         setRegisteredEvents={setRegisteredEvents}
         registeredByEmail={user !== undefined ? user.email : ""}
       />

@@ -6,6 +6,7 @@ import {
   newTeamRegistration,
 } from "@/utils/newRegistration";
 import { ToastContainer, toast } from "react-toastify";
+import { ParticipatedEvents } from "@/interface/ParticipatedEvents";
 
 export default function Modal({
   open,
@@ -16,6 +17,8 @@ export default function Modal({
   registeredEvents,
   setRegisteredEvents,
   registeredByEmail,
+  participatedEvents,
+  setParticipatedEvents,
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
@@ -27,6 +30,8 @@ export default function Modal({
   registeredEvents: number[];
   setRegisteredEvents: any;
   registeredByEmail: string | undefined;
+  participatedEvents: ParticipatedEvents[];
+  setParticipatedEvents: (participatedEvents: ParticipatedEvents[]) => void;
 }) {
   const [teamName, setTeamName] = useState<string>("");
   const [team, setTeam] = useState<any[]>([""]);
@@ -101,6 +106,17 @@ export default function Modal({
       });
   };
 
+  function updateParticipatedEvents(id: number) {
+    const tempParticipatedEvents = [...participatedEvents];
+
+    tempParticipatedEvents.push({
+      event_id: id,
+      registered_by: "",
+    });
+
+    setParticipatedEvents(tempParticipatedEvents);
+  }
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const emails = new Set();
@@ -139,6 +155,8 @@ export default function Modal({
         setOpen(false);
         setShowPayment(true);
         setAmount((prev: number) => prev + parseInt(event.fees));
+
+        updateParticipatedEvents(event.id);
       })
       .catch((err) => {
         toast.error(
@@ -288,6 +306,8 @@ export default function Modal({
                                     ...prev,
                                     event.id,
                                   ]);
+
+                                  updateParticipatedEvents(event.id);
                                 });
                               }}
                             >
