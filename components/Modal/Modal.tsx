@@ -7,6 +7,7 @@ import {
 } from "@/utils/newRegistration";
 import { ToastContainer, toast } from "react-toastify";
 import { ParticipatedEvents } from "@/interface/ParticipatedEvents";
+import { Events } from "@/interface/Events";
 
 export default function Modal({
   open,
@@ -22,7 +23,7 @@ export default function Modal({
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
-  event: any;
+  event: Events;
   setShowPayment: any;
   setAmount: any;
   /* ID of registered Events
@@ -73,7 +74,7 @@ export default function Modal({
                 />
               </div>
             </div>
-            {event.name === "Valorant" && (
+            {event!.name === "Valorant" && (
               <div
                 className="sm:col-span-4 mt-1 md:w-96"
                 key={`vloid_input__field__${index}`}
@@ -91,7 +92,7 @@ export default function Modal({
                     type="text"
                     className="block pl-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     placeholder="Valorant ID"
-                    required={index <= event.min_team_size - 1}
+                    required={index <= event!.min_team_size - 1}
                     onChange={(e) => {
                       const newId = [...valoID];
                       newId[index] = e.target.value;
@@ -124,7 +125,7 @@ export default function Modal({
       emails.add(email);
     });
 
-    if (event.name === "Valorant") {
+    if (event!.name === "Valorant") {
       const ids = new Set();
       valoID.forEach((id) => {
         ids.add(id);
@@ -146,17 +147,17 @@ export default function Modal({
     newTeamRegistration({
       team_name: teamName,
       team_members: team,
-      event_id: event.id,
+      event_id: event!.id,
       valoId: valoID,
     })
       .then(() => {
-        setRegisteredEvents((prev: any) => [...prev, event.id]);
+        setRegisteredEvents((prev: any) => [...prev, event!.id]);
         toast.success("Registration Successful!");
         setOpen(false);
         setShowPayment(true);
-        setAmount((prev: number) => prev + parseInt(event.fees));
+        setAmount((prev: number) => prev + event!.fees);
 
-        updateParticipatedEvents(event.id);
+        updateParticipatedEvents(event!.id);
       })
       .catch((err) => {
         toast.error(
@@ -213,7 +214,7 @@ export default function Modal({
                         >
                           <div className="flex justify-between items-center">
                             <h3 className="font-semibold leading-6 text-gray-900 text-3xl">
-                              {event.name}
+                              {event!.name}
                             </h3>
                             <div>
                               <button
@@ -230,18 +231,18 @@ export default function Modal({
                           <p
                             className="text-sm text-gray-500"
                             dangerouslySetInnerHTML={{
-                              __html: event.rules_regulations,
+                              __html: event!.rules_regulations,
                             }}
                           />
                         </div>
-                        {event.type === "TEAM" && (
+                        {event!.type === "TEAM" && (
                           <p className="text-red-700 mt-4 text-sm">
                             All the emails should be registered on platform to
                             continue registration!
                           </p>
                         )}
                         <p className="mt-2">
-                          {event.type === "TEAM" && (
+                          {event!.type === "TEAM" && (
                             <form
                               className="grid grid-cols-1 gap-y-6 sm:grid-cols-6"
                               onSubmit={handleSubmit}
@@ -268,7 +269,7 @@ export default function Modal({
                                   />
                                 </div>
                               </div>
-                              {renderFormFields(event.team_size)}
+                              {renderFormFields(event!.team_size)}
                               <div className="sm:col-span-6">
                                 <button
                                   type="submit"
@@ -287,27 +288,26 @@ export default function Modal({
                               </div>
                             </form>
                           )}
-                          {event.type === "SOLO" && (
+                          {event!.type === "SOLO" && (
                             <button
                               type="submit"
                               className="mt-4 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-3 sm:text-sm"
                               onClick={() => {
                                 newSoloRegistration({
-                                  event_id: event.id,
+                                  event_id: event!.id,
                                 }).then(() => {
                                   toast.success("Registration Successful!");
                                   setOpen(false);
                                   setShowPayment(true);
                                   setAmount(
-                                    (prev: number) =>
-                                      prev + parseInt(event.fees)
+                                    (prev: number) => prev + event!.fees
                                   );
                                   setRegisteredEvents((prev: any) => [
                                     ...prev,
-                                    event.id,
+                                    event!.id,
                                   ]);
 
-                                  updateParticipatedEvents(event.id);
+                                  updateParticipatedEvents(event!.id);
                                 });
                               }}
                             >

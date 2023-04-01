@@ -9,7 +9,7 @@ export async function newTeamRegistration({
 }: {
   team_name: string;
   team_members: string[];
-  event_id: string;
+  event_id: number;
   valoId?: string[];
 }) {
   const members: { [key: string]: string } = {};
@@ -39,7 +39,7 @@ export async function newTeamRegistration({
   }
 }
 
-export async function newSoloRegistration({ event_id }: { event_id: string }) {
+export async function newSoloRegistration({ event_id }: { event_id: number }) {
   const user = await getUser();
 
   if (user) {

@@ -26,7 +26,9 @@ const Modal = dynamic(() => import("@/components/Modal/Modal"), {
 });
 
 export async function getServerSideProps() {
-  const data = await getEvents();
+  const data = await getEvents(
+    "id,name,poster_image,multiple_registrations_allowed,min_team_size,fees,type,team_size,rules_regulations"
+  );
 
   return {
     props: { data },
@@ -34,9 +36,18 @@ export async function getServerSideProps() {
 }
 
 export default function Dashboard({ data }: { data: any }) {
-  const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [eventData, setEventData] = useState<any>({});
+  const [eventData, setEventData] = useState<Events>({
+    id: 0,
+    name: "",
+    poster_image: "",
+    multiple_registrations_allowed: false,
+    min_team_size: 0,
+    fees: 0,
+    type: "",
+    team_size: 0,
+    rules_regulations: "",
+  } as Events);
 
   const [amount, setAmount] = useState(0);
   const [showPaymentBtn, setShowPaymentBtn] = useState(false);
@@ -60,7 +71,6 @@ export default function Dashboard({ data }: { data: any }) {
         }
       }),
       getUser().then((user) => {
-        setIsLoading(false);
         if (user === null) {
           redirect("/");
         } else {
@@ -100,10 +110,6 @@ export default function Dashboard({ data }: { data: any }) {
     return tempEventId.includes(id);
   }
 
-  if (isLoading) {
-    return <>Loading</>;
-  }
-
   return (
     <>
       <Head>
@@ -133,39 +139,42 @@ export default function Dashboard({ data }: { data: any }) {
             Pay ₹ {amount}
           </button>
         )}
-        <div className="flex flex-row justify-end mr-4 ">
-          <Link
-            className="w-fit hover:bg-green-600 action:bg-green-600 rounded py-2 px-4 mt-32"
-            href={{
-              pathname: "/events/registered",
-            }}
-            style={{
-              color: "white",
-            }}
-          >
-            Registered Events
-          </Link>
-          <Link
-            className="w-fit hover:bg-gray-600 action:bg-gray-600 rounded py-2 px-4 mt-32"
-            href="/profile"
-            style={{
-              color: "white",
-            }}
-          >
-            Edit Profile
-          </Link>
-          <button
-            className="w-fit hover:bg-red-600 action:bg-red-600 rounded py-2 px-4 mt-32"
-            style={{
-              color: "white",
-            }}
-            onClick={() => {
-              signOut();
-              router.replace("/");
-            }}
-          >
-            Sign Out!
-          </button>
+        <div className="flex flex-col items-end w-full text-white pr-4">
+          <div className="py-2 px-4 mt-32 flex flex-row items-center">
+            <span>{`Hi ${user?.user_metadata.name.split(" ")[0]}!`}</span>
+            <Image
+              src={user?.user_metadata.avatar_url ?? ""}
+              alt=""
+              width="30"
+              height="30"
+              className="rounded-full ml-3"
+            />
+          </div>
+          <div className="flex flex-row">
+            <Link
+              className="w-fit hover:bg-green-600 action:bg-green-600 rounded py-2 px-4"
+              href={{
+                pathname: "/events/registered",
+              }}
+            >
+              Registered Events
+            </Link>
+            <Link
+              className="w-fit hover:bg-gray-600 action:bg-gray-600 rounded py-2 px-4"
+              href="/profile"
+            >
+              Edit Profile
+            </Link>
+            <button
+              className="w-fit hover:bg-red-600 action:bg-red-600 rounded py-2 px-4"
+              onClick={() => {
+                signOut();
+                router.replace("/");
+              }}
+            >
+              Sign Out!
+            </button>
+          </div>
         </div>
         <div className="flex flex-row flex-wrap items-center justify-center h-full w-full">
           {data.map((event: Events) => {

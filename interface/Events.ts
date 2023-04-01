@@ -13,7 +13,7 @@ export interface Events {
   category?: string /* foreign key to event_categories.name */;
   details?: string;
   convenor?: string /* foreign key to users.id */;
-  min_team_size?: number;
+  min_team_size: number;
   event_categories?: Event_categories;
   multiple_registrations_allowed?: boolean;
   events?: number;
