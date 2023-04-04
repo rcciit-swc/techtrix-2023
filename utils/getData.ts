@@ -59,14 +59,17 @@ export async function getRegisteredEvents({
   }
 }
 
-export async function getUserProfile(id: string) {
-  let { data, error } = await supabase.from("users").select("*").eq("id", id);
+export async function getUserProfile(id: string, select: string = "*") {
+  let { data, error } = await supabase
+    .from("users")
+    .select(select)
+    .eq("id", id);
 
   if (error) {
     console.error(error);
   }
 
-  const users: Users[] = data as Users[];
+  const users: Users[] = data as unknown as Users[];
   return users;
 }
 

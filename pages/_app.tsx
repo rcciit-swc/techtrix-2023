@@ -4,9 +4,12 @@ import "react-toastify/dist/ReactToastify.css";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
+import GetUser from "@/hooks/getUser";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState(false);
+
+  const { isLoading, userObject } = GetUser();
 
   useEffect(() => {
     const start = () => {
@@ -32,7 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <LoadingSpinner />
         </span>
       ) : (
-        <Component {...pageProps} />
+        <Component {...pageProps} user={userObject} isLoading={isLoading} />
       )}
     </>
   );
