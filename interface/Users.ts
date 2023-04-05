@@ -6,6 +6,7 @@ export interface Users {
   phone?: string;
   college?: string;
   year?: string;
+  coordinating_event_id?: number;
 }
 
 export interface Database {

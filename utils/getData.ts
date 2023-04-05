@@ -30,6 +30,27 @@ export async function getEvents(select: string = "*") {
   }
 }
 
+export async function getEventDetailsFromId({
+  select,
+  event_id,
+}: {
+  select: string;
+  event_id: number;
+}) {
+  try {
+    let { data } = await supabase
+      .from("events")
+      .select(select)
+      .eq("id", event_id);
+
+    const events: Events[] = data as unknown as Events[];
+
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 /* get the registered events of the user
  * @param select: the columns to be selected from the participation table
  */

@@ -2,22 +2,16 @@ import { Participation } from "@/interface/Participation";
 import { supabase } from "./SupabaseClient";
 
 export async function getParticipationInEvent({
-  select,
-  match = {
-    event_id: "",
-    user_id: "",
-  },
-  or = "phone_number.is.null, upi_id.is.null, transaction_screenshot_file_name.is.null, transaction_id.is.null",
+  select = "*",
+  match,
 }: {
   select?: string;
-  match?: { event_id: string; user_id: string };
-  or?: string;
+  match: { [key: string]: any };
 }) {
   const { data, error } = await supabase
     .from("participation")
     .select(select)
-    .match(match)
-    .or(or);
+    .match(match);
 
   if (error) {
     throw error;
