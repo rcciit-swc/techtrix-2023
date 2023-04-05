@@ -7,6 +7,7 @@ export interface Users {
   college?: string;
   year?: string;
   coordinating_event_id?: number;
+  convening_event_category?: string;
 }
 
 export interface Database {

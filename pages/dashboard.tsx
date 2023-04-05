@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import {
   getEvents,
   getRegisteredEvents,
+  getUserProfile,
   isUserDetailsEmpty,
 } from "@/utils/getData";
 import Image from "next/image";
@@ -59,6 +60,8 @@ export default function Dashboard({
   const [amount, setAmount] = useState(0);
   const [showPaymentBtn, setShowPaymentBtn] = useState(false);
 
+  const [showCoordinatorPage, setShowCoordinatorPage] = useState(false);
+
   //stored event ids of registered events
   //needed for checking if user has registered for an event or not
   const [registeredEvents, setRegisteredEvents] = useState<any[]>([]);
@@ -77,8 +80,11 @@ export default function Dashboard({
       Promise.all([
         isUserDetailsEmpty().then((value) => {
           if (value) {
-            router.push("/profile");
+            router.replace("/profile");
           }
+        }),
+        getUserProfile(user!.id, "role").then((profile) => {
+          if (profile[0].role !== "participant") setShowCoordinatorPage(true);
         }),
         supabase
           .rpc("search_email_in_registered_event", {
@@ -180,6 +186,14 @@ export default function Dashboard({
               Sign Out!
             </button>
           </div>
+          {showCoordinatorPage && (
+            <Link
+              className="w-fit hover:bg-blue-600 action:bg-blue-600 rounded py-2 px-4"
+              href="/coordinator"
+            >
+              Coordinator Page
+            </Link>
+          )}
         </div>
         <div className="flex flex-row flex-wrap items-center justify-center h-full w-full">
           {data.map((event: Events) => {

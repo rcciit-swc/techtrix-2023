@@ -34,28 +34,34 @@ const Coordinator = ({
   useEffect(() => {
     if (!isLoading) {
       if (user) {
-        getUserProfile(user.id, "role,id,coordinating_event_id").then(
-          (profiles) => {
-            if (profiles[0].role === "participant") router.replace("/");
-            else {
-              // check if superadmin or convenor or coordinator
-              if (profiles[0].role === "superadmin") {
-                getEvents("id,name").then((events) =>
-                  setEvents(events as unknown as Events[])
-                );
-              } else if (profiles[0].role === "convenor") {
-                // get events of the convenor
-              } else if (profiles[0].role === "coordinator") {
-                getEventDetailsFromId({
-                  select: "id,name",
-                  event_id: profiles[0].coordinating_event_id ?? 0,
-                }).then((events) => {
-                  setEvents(events as unknown as Events[]);
-                });
-              }
+        getUserProfile(
+          user.id,
+          "role,id,coordinating_event_id,convening_event_category"
+        ).then((profile) => {
+          if (profile[0].role === "participant") router.replace("/");
+          else {
+            // check if superadmin or convenor or coordinator
+            if (profile[0].role === "superadmin") {
+              getEvents("id,name").then((events) =>
+                setEvents(events as unknown as Events[])
+              );
+            } else if (profile[0].role === "convenor") {
+              getEventDetailsFromId({
+                select: "id,name",
+                category: profile[0].convening_event_category ?? "",
+              }).then((events) => {
+                setEvents(events as unknown as Events[]);
+              });
+            } else if (profile[0].role === "coordinator") {
+              getEventDetailsFromId({
+                select: "id,name",
+                event_id: profile[0].coordinating_event_id ?? 0,
+              }).then((events) => {
+                setEvents(events as unknown as Events[]);
+              });
             }
           }
-        );
+        });
       } else {
         router.replace("/");
       }

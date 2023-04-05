@@ -33,19 +33,27 @@ export async function getEvents(select: string = "*") {
 export async function getEventDetailsFromId({
   select,
   event_id,
+  category,
 }: {
   select: string;
-  event_id: number;
+  event_id?: number;
+  category?: string;
 }) {
   try {
-    let { data } = await supabase
-      .from("events")
-      .select(select)
-      .eq("id", event_id);
+    let data;
 
-    const events: Events[] = data as unknown as Events[];
+    if (event_id && category === undefined) {
+      data = await supabase.from("events").select(select).eq("id", event_id);
+    } else {
+      data = await supabase
+        .from("events")
+        .select(select)
+        .eq("category", category);
+    }
 
-    return data;
+    const events: Events[] = data.data as unknown as Events[];
+
+    return events;
   } catch (e) {
     console.error(e);
   }
