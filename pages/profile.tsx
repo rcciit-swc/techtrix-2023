@@ -1,11 +1,10 @@
 import NavBar from "@/components/Navbar/NavBar";
-import { getUser, getUserProfile } from "@/utils/getData";
+import { getUserProfile } from "@/utils/getData";
 import { searchCollege } from "@/utils/searchCollege";
 import { updateProfile } from "@/utils/updateProfile";
 import { User } from "@supabase/supabase-js";
 import { debounce } from "lodash";
 import Head from "next/head";
-import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import localData from "../public/data.json";
 import { Users } from "@/interface/Users";
@@ -14,9 +13,13 @@ import { validatePhoneNumber } from "@/utils/validatePhoneNumber";
 import { validateYear } from "@/utils/validateYear";
 import { useRouter } from "next/router";
 
-const Profile = () => {
-  const [user, setUser] = useState<User>();
-
+const Profile = ({
+  user,
+  isLoading,
+}: {
+  user: User | null;
+  isLoading: boolean;
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -34,23 +37,22 @@ const Profile = () => {
   }, [formData?.college, formData?.year, formData?.name, formData?.phone]);
 
   useEffect(() => {
-    getUser().then((user) => {
-      if (user) {
-        setUser(user);
-        getUserProfile(user.id).then((profiles) => {
-          const profile = profiles[0] as Users;
-          setFormData({
-            name: profile.name ?? "",
-            phone: profile.phone ?? "",
-            college: profile.college ?? "",
-            year: profile.year ?? "",
-          });
-        });
-      } else {
-        redirect("/");
+    if (!isLoading) {
+      if (user === null) {
+        router.replace("/");
       }
-    });
-  }, []);
+      getUserProfile(user!.id).then((profiles) => {
+        const profile = profiles[0] as Users;
+        setFormData({
+          name: profile.name ?? "",
+          phone: profile.phone ?? "",
+          college: profile.college ?? "",
+          year: profile.year ?? "",
+        });
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   const [suggestions, setSuggestions] = useState<Array<any>>([]);
 
@@ -124,7 +126,7 @@ const Profile = () => {
           <form onSubmit={editProfile}>
             <div className="space-y-12">
               <div className="border-b border-gray-900/10 pb-12">
-                <h2 className="text-base p-6 font-semibold leading-7 text-gray-900">
+                <h2 className="text-base pt-32 font-semibold leading-7 text-gray-900">
                   Personal Information
                 </h2>
                 <div className="mt-5 flex flex-row flex-wrap p-6 gap-y-8 gap-x-6">

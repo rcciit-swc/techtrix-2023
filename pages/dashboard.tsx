@@ -1,12 +1,10 @@
 import Head from "next/head";
 import localData from "../public/data.json";
 import NavBar from "@/components/Navbar/NavBar";
-import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   getEvents,
   getRegisteredEvents,
-  getUser,
   isUserDetailsEmpty,
 } from "@/utils/getData";
 import Image from "next/image";
@@ -23,6 +21,7 @@ import { ParticipatedEvents } from "@/interface/ParticipatedEvents";
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   loading: () => <></>,
+  ssr: false,
 });
 
 export async function getServerSideProps() {
@@ -35,7 +34,15 @@ export async function getServerSideProps() {
   };
 }
 
-export default function Dashboard({ data }: { data: any }) {
+export default function Dashboard({
+  data,
+  user,
+  isLoading,
+}: {
+  data: any;
+  user: User | null;
+  isLoading: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [eventData, setEventData] = useState<Events>({
     id: 0,
@@ -51,7 +58,6 @@ export default function Dashboard({ data }: { data: any }) {
 
   const [amount, setAmount] = useState(0);
   const [showPaymentBtn, setShowPaymentBtn] = useState(false);
-  const [user, setUser] = useState<User>();
 
   //stored event ids of registered events
   //needed for checking if user has registered for an event or not
@@ -64,46 +70,45 @@ export default function Dashboard({ data }: { data: any }) {
   const router = useRouter();
 
   useEffect(() => {
-    Promise.all([
-      isUserDetailsEmpty().then((value) => {
-        if (value) {
-          router.push("/profile");
-        }
-      }),
-      getUser().then((user) => {
-        if (user === null) {
-          redirect("/");
-        } else {
-          setUser(user);
-          supabase
-            .rpc("search_email_in_registered_event", {
-              email: user.email,
-            })
-            .then((val) => {
-              setParticipatedEvents(val.data);
-            });
-        }
-      }),
-      getRegisteredEvents({
-        select: `events(id, fees),registration_cancelled,transaction_id`,
-      }).then((data) => {
-        let amount = 0;
-        if (data) {
-          const temp = data.map((item: Participation) => item.events!.id);
-          data.forEach((item: Participation) => {
-            if (!item.registration_cancelled && item.transaction_id === null)
-              amount += item.events!.fees!;
-          });
-          if (amount > 0) {
-            setShowPaymentBtn(true);
+    if (!isLoading) {
+      if (user === null) {
+        router.replace("/");
+      }
+      Promise.all([
+        isUserDetailsEmpty().then((value) => {
+          if (value) {
+            router.push("/profile");
           }
-          setAmount(amount);
-          setRegisteredEvents(temp);
-        }
-      }),
-    ]);
+        }),
+        supabase
+          .rpc("search_email_in_registered_event", {
+            email: user!.email,
+          })
+          .then((val) => {
+            setParticipatedEvents(val.data);
+          }),
+        getRegisteredEvents({
+          select: `events(id, fees),registration_cancelled,transaction_id`,
+          email: user!.email!,
+        }).then((data) => {
+          let amount = 0;
+          if (data) {
+            const temp = data.map((item: Participation) => item.events!.id);
+            data.forEach((item: Participation) => {
+              if (!item.registration_cancelled && item.transaction_id === null)
+                amount += item.events!.fees!;
+            });
+            if (amount > 0) {
+              setShowPaymentBtn(true);
+            }
+            setAmount(amount);
+            setRegisteredEvents(temp);
+          }
+        }),
+      ]);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isLoading]);
 
   function checkIfParticipatedInEvent(id: number) {
     const tempEventId = participatedEvents.map((item) => item.event_id);
@@ -231,7 +236,7 @@ export default function Dashboard({ data }: { data: any }) {
         participatedEvents={participatedEvents}
         setParticipatedEvents={setParticipatedEvents}
         setRegisteredEvents={setRegisteredEvents}
-        registeredByEmail={user !== undefined ? user.email : ""}
+        registeredByEmail={user?.email}
       />
     </>
   );

@@ -2,12 +2,13 @@ import Button from "@/components/Button";
 import NavBar from "@/components/Navbar/NavBar";
 import { Participation } from "@/interface/Participation";
 import { cancelRegistration } from "@/utils/cancelRegistration";
-import { getRegisteredEvents, getUser } from "@/utils/getData";
+import { getRegisteredEvents } from "@/utils/getData";
 import { searchEmailInParticipation } from "@/utils/searchEmailInParticipation";
 import { User } from "@supabase/supabase-js";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import localData from "../../public/data.json";
 
@@ -22,13 +23,18 @@ const LoadingSpinner = dynamic(
   }
 );
 
-const Events = () => {
+const Events = ({
+  user,
+  isLoading,
+}: {
+  user: User | null;
+  isLoading: boolean;
+}) => {
   // all the registered events from participation table
   const [data, setData] = useState<Participation[]>([]);
   // stores the checkbox values for the registered events
   const [checked, setChecked] = useState<boolean[]>([]);
 
-  const [user, setUser] = useState<User | null>(null);
   const [showPaymentModal, setshowPaymentModal] = useState<boolean>(false);
 
   const [amount, setAmount] = useState<number>(0);
@@ -48,13 +54,9 @@ const Events = () => {
   async function getTeamRegisteredEvents() {
     setIsteamRegisteredEventsExpanded(!isTeamRegisteredEventsExpanded);
     setIsteamRegisteredEventsLoading(true);
-    if (user === null) {
-      const user = await getUser();
-      setUser(user);
-    }
 
-    if (user) {
-      const data = await searchEmailInParticipation(user.email ?? "");
+    if (!isLoading && user !== null) {
+      const data = await searchEmailInParticipation(user.email!);
 
       if (data.length > 0) {
         setTeamRegisteredEvents(data);
@@ -82,35 +84,45 @@ const Events = () => {
     setshowPaymentModal(true);
   }
 
+  const router = useRouter();
+
   useEffect(() => {
-    Promise.all([
-      getUser().then((user) => {
-        if (user) setUser(user);
-      }),
-      getRegisteredEvents({}).then((data) => {
-        if (data) {
-          setData(data);
+    if (!isLoading) {
+      if (user === null) {
+        router.replace("/");
+      }
+      Promise.all([
+        getRegisteredEvents({
+          email: user!.email!,
+        }).then((data) => {
+          if (data) {
+            setData(data);
 
-          // only the events which have not been paid yet should be checked by default
-          setChecked(
-            data.map((item) => {
-              if (item.transaction_id !== null && item.phone_number !== null)
-                return false;
-              return true;
-            })
-          );
+            // only the events which have not been paid yet should be checked by default
+            setChecked(
+              data.map((item) => {
+                if (item.transaction_id !== null && item.phone_number !== null)
+                  return false;
+                return true;
+              })
+            );
 
-          let tempAmount = 0;
+            let tempAmount = 0;
 
-          data.forEach((item: Participation) => {
-            if (!item.registration_cancelled && item.transaction_id === null) {
-              tempAmount += item.events!.fees!;
-            }
-          });
-          setAmount(tempAmount);
-        }
-      }),
-    ]);
+            data.forEach((item: Participation) => {
+              if (
+                !item.registration_cancelled &&
+                item.transaction_id === null
+              ) {
+                tempAmount += item.events!.fees!;
+              }
+            });
+            setAmount(tempAmount);
+          }
+        }),
+      ]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleCheckEvent(index: number) {

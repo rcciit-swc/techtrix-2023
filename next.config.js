@@ -24,18 +24,7 @@ const nextConfig = {
     ],
   },
   async redirects() {
-    return [
-      {
-        source: "/dashboard",
-        destination: "/",
-        permanent: false,
-      },
-      {
-        source: "/profile",
-        destination: "/",
-        permanent: false,
-      },
-    ];
+    return [];
   },
 };
 

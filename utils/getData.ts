@@ -57,24 +57,21 @@ export async function getEventDetailsFromId({
 
 export async function getRegisteredEvents({
   select = `id, team_name, team_member_0, team_member_1, team_member_2, team_member_3, team_member_4, team_member_5, transaction_id, transaction_verified, registration_cancelled, events(name, poster_image, fees)`,
+  email,
 }: {
   select?: string;
+  email: string;
 }) {
   try {
-    const user = await getUser();
-    if (user) {
-      let { data, error } = await supabase
-        .from("participation")
-        .select(select)
-        .eq("registered_by", user.email);
+    let { data, error } = await supabase
+      .from("participation")
+      .select(select)
+      .eq("registered_by", email);
 
-      const participationData: Participation[] =
-        data as unknown as Participation[];
+    const participationData: Participation[] =
+      data as unknown as Participation[];
 
-      return participationData;
-    } else {
-      return null;
-    }
+    return participationData;
   } catch (e) {
     console.error(e);
   }
