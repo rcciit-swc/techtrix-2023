@@ -3,7 +3,9 @@
 ## Stack
 Next.JS + Supabase + TailwindCSS + Vercel
 
-## Users Table
+## Tables
+
+Users
 ```sql
 create table
   public.users (
@@ -32,7 +34,7 @@ create table
   ) tablespace pg_default;
 ```
 
-## Events Table
+Events
 ```sql
 create table
   public.events (
@@ -53,7 +55,7 @@ create table
   ) tablespace pg_default;
 ```
 
-Event Categories Table
+Event Categories
 ```sql
 create table
   public.event_categories (
@@ -66,7 +68,7 @@ create table
   ) tablespace pg_default;
 ```
 
-Participation Table
+Participation
 ```sql
 create table
   public.participation (
