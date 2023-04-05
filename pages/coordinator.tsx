@@ -64,10 +64,23 @@ const Coordinator = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
-  function handleEventClick(event_id: number, event_name: string) {
+  function checkEventName(id: number) {
+    let event_name = "";
+    events.forEach((event) => {
+      if (event.id === id) event_name = event.name;
+    });
+    return event_name;
+  }
+
+  function handleEventClick(event_id: number) {
     setLoading(true);
+
+    const event_name = checkEventName(event_id);
+
     setSelectedEvent(event_name);
 
+    // check if data is already present in the state
+    // if present, do not fetch again
     if (participationData[event_name] === undefined) {
       getParticipationInEvent({
         match: {
@@ -104,7 +117,9 @@ const Coordinator = ({
       <main className="h-full flex flex-col items-center">
         <div className="pt-24 w-1/2">
           <select
-            id="countries"
+            onChange={(e) => {
+              handleEventClick(parseInt(e.target.value));
+            }}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
             <option
@@ -116,13 +131,7 @@ const Coordinator = ({
               Choose an event!
             </option>
             {events.map((event, index) => (
-              <option
-                key={`event__option__${index}`}
-                value={event.id}
-                onClick={() => {
-                  handleEventClick(event.id, event.name);
-                }}
-              >
+              <option key={`event__option__${index}`} value={event.id}>
                 {event.name}
               </option>
             ))}
