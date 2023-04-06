@@ -9,6 +9,15 @@ import localData from "../public/data.json";
 import { getEvents } from "@/utils/getData";
 import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 import { getParticipationInEvent } from "@/utils/getParticipationInEvent";
+import dynamic from "next/dynamic";
+
+const ParticipationDetails = dynamic(
+  () => import("@/components/Modal/ParticipationDetails"),
+  {
+    loading: () => <></>,
+    ssr: false,
+  }
+);
 
 const Coordinator = ({
   user,
@@ -23,6 +32,13 @@ const Coordinator = ({
   const [loading, setLoading] = useState(true);
 
   const [selectedEvent, setSelectedEvent] = useState<string>("");
+
+  // participation details modal
+  const [openParticipationDetails, setOpenParticipationDetails] =
+    useState(false);
+  const [participationDetails, setParticipationDetails] = useState<JSX.Element>(
+    <></>
+  );
 
   // all events
   const [events, setEvents] = useState<Events[]>([]);
@@ -93,7 +109,7 @@ const Coordinator = ({
           event_id: event_id,
         },
         select:
-          "registered_by(name,email,phone),team_member_0,team_member_1,team_member_2,team_member_3,team_member_4,team_member_5,team_name,transaction_id,transaction_verified",
+          "registered_by(name,email,phone),team_member_1,team_member_2,team_member_3,team_member_4,team_member_5,team_name,transaction_id,transaction_verified",
       }).then((data) => {
         setParticipationData({
           ...participationData,
@@ -110,6 +126,44 @@ const Coordinator = ({
         <LoadingSpinner />
       </div>
     );
+
+  function addEmailsInParticipationDetailsModal(data: any): JSX.Element[] {
+    const emails: JSX.Element[] = [];
+
+    for (let i = 0; i < 5; i++) {
+      emails.push(
+        <li key={`emails__li__${i}`}>
+          <a
+            className="text-blue-900"
+            href={`mailto:${data[`team_member_${i}`]}`}
+          >
+            {data[`team_member_${i}`]}
+          </a>
+        </li>
+      );
+    }
+
+    return emails;
+  }
+
+  function openParticipationModal(data: any) {
+    setParticipationDetails(
+      <div className="flex flex-col">
+        <ul>
+          <div className="mb-2">Mails:</div>
+          <li>
+            <a
+              className="text-blue-900"
+              href={`mailto:${data[`registered_by`][`email`]}`}
+            >
+              {data[`registered_by`][`email`]}
+            </a>
+          </li>
+          {addEmailsInParticipationDetailsModal(data)}
+        </ul>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -163,7 +217,15 @@ const Coordinator = ({
                         index % 2 === 0 ? "rgba(77, 77, 77, 0.1)" : "#fff",
                     }}
                   >
-                    <td className="px-2">{data.registered_by["name"]}</td>
+                    <td
+                      className="px-2 cursor-pointer text-blue-900 text-xs"
+                      onClick={() => {
+                        setOpenParticipationDetails(true);
+                        openParticipationModal(data);
+                      }}
+                    >
+                      {data.registered_by["name"]}
+                    </td>
                     <td className="px-2">
                       {
                         <a
@@ -193,6 +255,13 @@ const Coordinator = ({
           </table>
         )}
       </main>
+      <ParticipationDetails
+        open={openParticipationDetails}
+        setOpen={setOpenParticipationDetails}
+        title={selectedEvent}
+      >
+        {participationDetails}
+      </ParticipationDetails>
     </>
   );
 };

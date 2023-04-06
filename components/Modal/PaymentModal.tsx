@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { uploadFile } from "@/utils/uploadFile";
 import { updateParticipationPayment } from "@/utils/updateParticipationPayment";
 import { Participation } from "@/interface/Participation";
+import CloseIcon from "../CloseIcon";
 
 const PaymentModal = ({
   open,
@@ -201,10 +202,10 @@ const PaymentModal = ({
                             <div>
                               <button
                                 type="button"
-                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500"
+                                className="inline-flex justify-center p-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500"
                                 onClick={() => setOpen(false)}
                               >
-                                Close
+                                <CloseIcon />
                               </button>
                             </div>
                           </div>

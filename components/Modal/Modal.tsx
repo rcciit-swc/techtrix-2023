@@ -8,6 +8,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import { ParticipatedEvents } from "@/interface/ParticipatedEvents";
 import { Events } from "@/interface/Events";
+import CloseIcon from "../CloseIcon";
 
 export default function Modal({
   open,
@@ -219,10 +220,10 @@ export default function Modal({
                             <div>
                               <button
                                 type="button"
-                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500"
+                                className="inline-flex justify-center p-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500"
                                 onClick={() => setOpen(false)}
                               >
-                                Close
+                                <CloseIcon />
                               </button>
                             </div>
                           </div>
