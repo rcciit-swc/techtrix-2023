@@ -109,7 +109,7 @@ const Coordinator = ({
           event_id: event_id,
         },
         select:
-          "registered_by(name,email,phone),team_member_1,team_member_2,team_member_3,team_member_4,team_member_5,team_name,transaction_id,transaction_verified",
+          "registered_by(name,email,phone,college),team_member_1,team_member_2,team_member_3,team_member_4,team_member_5,team_name,transaction_id,transaction_verified",
       }).then((data) => {
         setParticipationData({
           ...participationData,
@@ -149,6 +149,7 @@ const Coordinator = ({
   function openParticipationModal(data: any) {
     setParticipationDetails(
       <div className="flex flex-col">
+        <div className="mb-2 text-xs">{data.registered_by.college}</div>
         <ul>
           <div className="mb-2">Mails:</div>
           <li>
