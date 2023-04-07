@@ -25,7 +25,7 @@ const PaymentModal = ({
   setData,
   registeredEvents,
   setRegisteredEvents,
-  setChecked,
+  // setChecked,
   packages,
 }: {
   open: boolean;
@@ -39,7 +39,7 @@ const PaymentModal = ({
   setData: (data: Participation[]) => void;
   registeredEvents: number[];
   setRegisteredEvents: (registeredEvents: number[]) => void;
-  setChecked: (checked: boolean[]) => void;
+  // setChecked: (checked: boolean[]) => void;
   packages: Packages[];
 }) => {
   const [transactionID, setTransactionID] = useState("");
@@ -168,13 +168,14 @@ const PaymentModal = ({
       }
 
       setData(temp);
+      setToBePaid([])
 
-      setChecked(
-        temp.map((item) => {
-          if (item.transaction_id !== null) return false;
-          return true;
-        })
-      );
+      // setChecked(
+      //   temp.map((item) => {
+      //     if (item.transaction_id !== null) return false;
+      //     return true;
+      //   })
+      // );
 
       setDisabled(false);
       setAmount(0);
@@ -182,6 +183,7 @@ const PaymentModal = ({
     });
   };
 
+  console.log(toBePaid)
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
