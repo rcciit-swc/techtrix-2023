@@ -102,6 +102,7 @@ create table
     transaction_screenshot_file_name text null,
     upi_id text null,
     phone_number text null,
+    time_stamp timestamp with time zone null default now(),
     constraint participation_pkey primary key (id),
     constraint participation_id_key unique (id),
     constraint participation_team_member_0_fkey foreign key (team_member_0) references users (email),

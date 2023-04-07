@@ -8,6 +8,7 @@ export interface Users {
   year?: string;
   coordinating_event_id?: number;
   convening_event_category?: string;
+  time_stamp?: string;
 }
 
 export interface Database {

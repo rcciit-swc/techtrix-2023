@@ -11,7 +11,8 @@ export async function getParticipationInEvent({
   const { data, error } = await supabase
     .from("participation")
     .select(select)
-    .match(match);
+    .match(match)
+    .order("time_stamp", { ascending: true });
 
   if (error) {
     throw error;
