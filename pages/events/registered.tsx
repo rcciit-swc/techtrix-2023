@@ -1,8 +1,10 @@
 import Button from "@/components/Button";
 import NavBar from "@/components/Navbar/NavBar";
+import { Packages } from "@/interface/Packages";
 import { Participation } from "@/interface/Participation";
 import { cancelRegistration } from "@/utils/cancelRegistration";
 import { getRegisteredEvents } from "@/utils/getData";
+import { getPackages } from "@/utils/getPackages";
 import { searchEmailInParticipation } from "@/utils/searchEmailInParticipation";
 import { User } from "@supabase/supabase-js";
 import dynamic from "next/dynamic";
@@ -26,12 +28,15 @@ const LoadingSpinner = dynamic(
 const Events = ({
   user,
   isLoading,
+  packages,
 }: {
   user: User | null;
   isLoading: boolean;
+  packages: Packages[];
 }) => {
   // all the registered events from participation table
   const [data, setData] = useState<Participation[]>([]);
+  const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
   // stores the checkbox values for the registered events
   const [checked, setChecked] = useState<boolean[]>([]);
 
@@ -107,7 +112,9 @@ const Events = ({
               })
             );
 
-            let tempAmount = 0;
+            let tempAmount: number = 0;
+
+            const temp: number[] = [];
 
             data.forEach((item: Participation) => {
               if (
@@ -116,14 +123,16 @@ const Events = ({
               ) {
                 tempAmount += item.events!.fees!;
               }
+              temp.push(item.events!.id!);
             });
             setAmount(tempAmount);
+            setRegisteredEvents(temp);
           }
         }),
       ]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isLoading]);
 
   function handleCheckEvent(index: number) {
     // temp variable for manipulating checked array
@@ -136,8 +145,12 @@ const Events = ({
     const tempData = [...data];
     if (!newChecked[index]) {
       setAmount(amount - tempData[index]!.events!.fees ?? 0);
+      const temp = [...registeredEvents];
+      temp.splice(temp.indexOf(index), 1);
+      setRegisteredEvents(temp);
     } else {
       setAmount(amount + tempData[index]!.events!.fees ?? 0);
+      setRegisteredEvents([...registeredEvents, tempData[index]!.events!.id]);
     }
   }
 
@@ -148,8 +161,11 @@ const Events = ({
 
     if (checked[index]) {
       setAmount(amount + fees);
+      setRegisteredEvents([...registeredEvents, newData[index]!.events!.id]);
     }
   }
+
+  console.log(registeredEvents);
 
   return (
     <>
@@ -255,6 +271,9 @@ const Events = ({
                                 setAmount(
                                   amount - registrationData!.events!.fees
                                 );
+                                const temp = [...registeredEvents];
+                                temp.splice(temp.indexOf(index), 1);
+                                setRegisteredEvents(temp);
                               }
                             });
                           }}
@@ -314,7 +333,7 @@ const Events = ({
               onClick={() => {
                 showPaymentModalHandler();
               }}
-              text={`Pay ₹${amount}!`}
+              text={`Pay!`}
             />
           </span>
         )}
@@ -420,12 +439,23 @@ const Events = ({
         toBePaid={toBePaid}
         setToBePaid={setToBePaid}
         email={user?.email || ""}
-        registeredEvents={data}
-        setRegisteredEvents={setData}
+        registeredEvents={registeredEvents}
+        setRegisteredEvents={setRegisteredEvents}
+        data={data}
+        setData={setData}
         setChecked={setChecked}
+        packages={packages}
       />
     </>
   );
 };
 
 export default Events;
+
+export async function getServerSideProps() {
+  const packages = await getPackages({ select: "event_id,discount" });
+
+  return {
+    props: { packages },
+  };
+}

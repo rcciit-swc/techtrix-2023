@@ -10,6 +10,8 @@ import { uploadFile } from "@/utils/uploadFile";
 import { updateParticipationPayment } from "@/utils/updateParticipationPayment";
 import { Participation } from "@/interface/Participation";
 import CloseIcon from "../CloseIcon";
+import { checkIfDiscountApplicable } from "@/utils/checkIfDiscountApplicable";
+import { Packages } from "@/interface/Packages";
 
 const PaymentModal = ({
   open,
@@ -19,9 +21,12 @@ const PaymentModal = ({
   toBePaid,
   setToBePaid,
   email,
+  data,
+  setData,
   registeredEvents,
   setRegisteredEvents,
   setChecked,
+  packages,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -30,15 +35,34 @@ const PaymentModal = ({
   toBePaid: string[];
   setToBePaid: (toBePaid: string[]) => void;
   email: string;
-  registeredEvents: Participation[];
-  setRegisteredEvents: (registeredEvents: Participation[]) => void;
+  data: Participation[];
+  setData: (data: Participation[]) => void;
+  registeredEvents: number[];
+  setRegisteredEvents: (registeredEvents: number[]) => void;
   setChecked: (checked: boolean[]) => void;
+  packages: Packages[];
 }) => {
   const [transactionID, setTransactionID] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [upiID, setUpiID] = useState("");
   const [paymentScreenShot, setPaymentScreenShot] = useState<File>();
   const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    const discount = checkIfDiscountApplicable({
+      packages: packages,
+      registeredEvents: registeredEvents,
+    });
+    if (open && amount > 0) {
+      if (discount > 0) {
+        setAmount(amount - discount);
+      }
+    }
+    if (!open) {
+      setAmount(amount + discount);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   useEffect(() => {
     setDisabled(isFormEmpty());
@@ -135,7 +159,7 @@ const PaymentModal = ({
     Promise.all(updateTransactionFuncs).then(() => {
       toast.success("Payment Successful");
 
-      const temp = [...registeredEvents];
+      const temp = [...data];
 
       for (let i = 0; i < temp.length; i++) {
         if (toBePaid.includes(temp[i].id)) {
@@ -143,7 +167,7 @@ const PaymentModal = ({
         }
       }
 
-      setRegisteredEvents(temp);
+      setData(temp);
 
       setChecked(
         temp.map((item) => {

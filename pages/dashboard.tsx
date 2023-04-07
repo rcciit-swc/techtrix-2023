@@ -19,6 +19,9 @@ import { User } from "@supabase/supabase-js";
 import dynamic from "next/dynamic";
 import { supabase } from "@/utils/SupabaseClient";
 import { ParticipatedEvents } from "@/interface/ParticipatedEvents";
+import { checkIfDiscountApplicable } from "@/utils/checkIfDiscountApplicable";
+import { getPackages } from "@/utils/getPackages";
+import { Packages } from "@/interface/Packages";
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   loading: () => <></>,
@@ -30,17 +33,21 @@ export async function getServerSideProps() {
     "id,name,poster_image,multiple_registrations_allowed,min_team_size,fees,type,team_size,rules_regulations"
   );
 
+  const packages = await getPackages({ select: "event_id,discount" });
+
   return {
-    props: { data },
+    props: { data, packages },
   };
 }
 
 export default function Dashboard({
   data,
+  packages,
   user,
   isLoading,
 }: {
-  data: any;
+  data: Events[];
+  packages: Packages[];
   user: User | null;
   isLoading: boolean;
 }) {
@@ -64,8 +71,9 @@ export default function Dashboard({
 
   //stored event ids of registered events
   //needed for checking if user has registered for an event or not
-  const [registeredEvents, setRegisteredEvents] = useState<any[]>([]);
+  const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
 
+  // participating in a team; registered by someone else
   const [participatedEvents, setParticipatedEvents] = useState<
     ParticipatedEvents[]
   >([]);
@@ -147,7 +155,7 @@ export default function Dashboard({
             }}
             className="button fixed right-10 bottom-10 w-32 h-10"
           >
-            Pay ₹ {amount}
+            Pay!
           </button>
         )}
         <div className="flex flex-col items-end w-full text-white pr-4">
