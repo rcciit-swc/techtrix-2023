@@ -61,6 +61,10 @@ const Coordinator = ({
               getEvents("id,name").then((events) =>
                 setEvents(events as unknown as Events[])
               );
+            } else if (profile[0].role === "event_manager") {
+              getEvents("id,name").then((events) => {
+                setEvents(events as unknown as Events[]);
+              });
             } else if (profile[0].role === "convenor") {
               getEventDetailsFromId({
                 select: "id,name",
@@ -202,6 +206,7 @@ const Coordinator = ({
           <table className="table-auto w-screen text-center text-sm mt-5">
             <thead>
               <tr>
+                <th className="text-xs w-1">No.</th>
                 <th className="w-12">Team Lead</th>
                 <th>Phone</th>
                 <th className="w-44">Team</th>
@@ -218,6 +223,7 @@ const Coordinator = ({
                         index % 2 === 0 ? "rgba(77, 77, 77, 0.1)" : "#fff",
                     }}
                   >
+                    <td className="px-1 text-xs">{index + 1}</td>
                     <td
                       className="px-2 cursor-pointer text-blue-900 text-xs"
                       onClick={() => {

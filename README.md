@@ -23,12 +23,25 @@ create table
     constraint fk_coordinating_event_id foreign key (coordinating_event_id) references events (id),
     constraint users_convening_event_category_fkey foreign key (convening_event_category) references event_categories (name),
     constraint users_id_fkey foreign key (id) references auth.users (id) on delete cascade,
+    constraint year_check check (
+      (
+        (length(year) = 4)
+        or (length(coalesce(year, ''::text)) = 0)
+      )
+    ),
+    constraint phone_number_check check (
+      (
+        (length(phone) = 10)
+        or (length(coalesce(phone, ''::text)) = 0)
+      )
+    ),
     constraint check_role_type check (
       (
         (role = 'participant'::text)
         or (role = 'convenor'::text)
         or (role = 'superadmin'::text)
         or (role = 'coordinator'::text)
+        or (role = 'event_manager'::text)
       )
     )
   ) tablespace pg_default;
