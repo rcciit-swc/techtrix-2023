@@ -30,7 +30,7 @@ const Modal = dynamic(() => import("@/components/Modal/Modal"), {
 
 export async function getServerSideProps() {
   const data = await getEvents(
-    "id,name,poster_image,multiple_registrations_allowed,min_team_size,fees,type,team_size,rules_regulations"
+    "id,name,poster_image,multiple_registrations_allowed,min_team_size,fees,type,team_size,rules_regulations,is_open"
   );
 
   const packages = await getPackages({ select: "event_id,discount" });
@@ -220,28 +220,36 @@ export default function Dashboard({
                   />
                 </div>
                 <h1 className="text-2xl font-bold text-white">{event.name}</h1>
-                {checkIfParticipatedInEvent(event.id) ? (
-                  event.multiple_registrations_allowed ? (
-                    <Button
-                      text="Register!"
-                      onClick={() => {
-                        setEventData(event);
-                        setOpen(!open);
-                      }}
-                    />
-                  ) : (
-                    <span className="bg-green-700 rounded-sm py-1 px-2 text-white mt-5">
-                      Registered!
-                    </span>
-                  )
+                {event.is_open ? (
+                  <>
+                    {checkIfParticipatedInEvent(event.id) ? (
+                      event.multiple_registrations_allowed ? (
+                        <Button
+                          text="Register!"
+                          onClick={() => {
+                            setEventData(event);
+                            setOpen(!open);
+                          }}
+                        />
+                      ) : (
+                        <span className="bg-green-700 rounded-sm py-1 px-2 text-white mt-5">
+                          Registered!
+                        </span>
+                      )
+                    ) : (
+                      <Button
+                        text="Register!"
+                        onClick={() => {
+                          setEventData(event);
+                          setOpen(!open);
+                        }}
+                      />
+                    )}
+                  </>
                 ) : (
-                  <Button
-                    text="Register!"
-                    onClick={() => {
-                      setEventData(event);
-                      setOpen(!open);
-                    }}
-                  />
+                  <span className="bg-red-800 rounded-sm py-1 px-2 text-white mt-5">
+                    Registration Closed
+                  </span>
                 )}
               </div>
             );
