@@ -168,7 +168,7 @@ const PaymentModal = ({
       }
 
       setData(temp);
-      setToBePaid([])
+      setToBePaid([]);
 
       // setChecked(
       //   temp.map((item) => {
@@ -183,7 +183,6 @@ const PaymentModal = ({
     });
   };
 
-  console.log(toBePaid)
   return (
     <>
       <Transition.Root show={open} as={Fragment}>

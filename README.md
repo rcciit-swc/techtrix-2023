@@ -1,11 +1,13 @@
 # Techtrix, RCCIIT
 
 ## Stack
+
 Next.JS + Supabase + TailwindCSS + Vercel
 
 ## Tables
 
 Users
+
 ```sql
 create table
   public.users (
@@ -48,6 +50,7 @@ create table
 ```
 
 Events
+
 ```sql
 create table
   public.events (
@@ -69,6 +72,7 @@ create table
 ```
 
 Event Categories
+
 ```sql
 create table
   public.event_categories (
@@ -82,6 +86,7 @@ create table
 ```
 
 Participation
+
 ```sql
 create table
   public.participation (

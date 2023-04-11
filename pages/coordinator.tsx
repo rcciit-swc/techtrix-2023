@@ -111,6 +111,7 @@ const Coordinator = ({
       getParticipationInEvent({
         match: {
           event_id: event_id,
+          registration_cancelled: false,
         },
         select:
           "registered_by(name,email,phone,college),team_member_1,team_member_2,team_member_3,team_member_4,team_member_5,team_name,transaction_id,transaction_verified",

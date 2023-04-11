@@ -37,14 +37,16 @@ const Events = ({
   // all the registered events from participation table
   const [data, setData] = useState<Participation[]>([]);
   const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
-  const [paidRegisteredEvents,setPaidRegisteredEvents] = useState<number[]>([])
+  const [paidRegisteredEvents, setPaidRegisteredEvents] = useState<number[]>(
+    []
+  );
 
   const [showPaymentModal, setshowPaymentModal] = useState<boolean>(false);
 
   const [amount, setAmount] = useState<number>(0);
 
   // stores all the participation ids of the events to be paid
- const [toBePaid, setToBePaid] = useState<string[]>([]);
+  const [toBePaid, setToBePaid] = useState<string[]>([]);
 
   // events where user himself has not registered but is present in a team
   const [isTeamRegisteredEventsExpanded, setIsteamRegisteredEventsExpanded] =
@@ -82,8 +84,8 @@ const Events = ({
     // }
     // setToBePaid(participationIDs);
     // Combine paidRegistered Events and Registered Events
-    const temp = [...registeredEvents,...paidRegisteredEvents]
-    setRegisteredEvents(temp)
+    const temp = [...registeredEvents, ...paidRegisteredEvents];
+    setRegisteredEvents(temp);
     setshowPaymentModal(true);
   }
 
@@ -113,7 +115,7 @@ const Events = ({
             let tempAmount: number = 0;
             let tempToBePaid: string[] = [];
             const temp: number[] = [];
-            const tempPaidRegisteredEvents : number[] = []
+            const tempPaidRegisteredEvents: number[] = [];
             data.forEach((item: Participation) => {
               if (
                 !item.registration_cancelled &&
@@ -122,22 +124,20 @@ const Events = ({
                 tempAmount += item.events!.fees!;
                 temp.push(item.events!.id!);
                 tempToBePaid.push(item.id!);
-                setToBePaid(tempToBePaid)
-              } else if(item.transaction_id !== null){
-                tempPaidRegisteredEvents.push(item.events!.id!)
+                setToBePaid(tempToBePaid);
+              } else if (item.transaction_id !== null) {
+                tempPaidRegisteredEvents.push(item.events!.id!);
               }
             });
             setAmount(tempAmount);
             setRegisteredEvents(temp);
-            setPaidRegisteredEvents(tempPaidRegisteredEvents!)
+            setPaidRegisteredEvents(tempPaidRegisteredEvents!);
           }
         }),
       ]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
-
-  console.log(registeredEvents,paidRegisteredEvents)
 
   function handleCancelRegistration(index: number, fees: number) {
     const newData = data;
@@ -148,8 +148,6 @@ const Events = ({
     setToBePaid([...toBePaid, newData[index]!.id!]);
     setAmount(amount + fees);
   }
-
-  
 
   return (
     <>
@@ -252,15 +250,21 @@ const Events = ({
                               setData([...newData]);
 
                               // if (checked[index]) {
-                                setAmount(
-                                  amount - registrationData!.events!.fees
-                                );
-                                const temp = [...registeredEvents];
-                                temp.splice(temp.indexOf(registeredEvents[index]), 1);
-                                const tempToBePaid = [...toBePaid];
-                                tempToBePaid.splice(tempToBePaid.indexOf(toBePaid[index]), 1);
-                                setToBePaid(tempToBePaid);
-                                setRegisteredEvents(temp);
+                              setAmount(
+                                amount - registrationData!.events!.fees
+                              );
+                              const temp = [...registeredEvents];
+                              temp.splice(
+                                temp.indexOf(registeredEvents[index]),
+                                1
+                              );
+                              const tempToBePaid = [...toBePaid];
+                              tempToBePaid.splice(
+                                tempToBePaid.indexOf(toBePaid[index]),
+                                1
+                              );
+                              setToBePaid(tempToBePaid);
+                              setRegisteredEvents(temp);
                               // }
                             });
                           }}
