@@ -22,9 +22,9 @@ create table
     convening_event_category text null,
     constraint users_pkey primary key (id),
     constraint users_email_key unique (email),
-    constraint fk_coordinating_event_id foreign key (coordinating_event_id) references events (id),
-    constraint users_convening_event_category_fkey foreign key (convening_event_category) references event_categories (name),
     constraint users_id_fkey foreign key (id) references auth.users (id) on delete cascade,
+    constraint users_convening_event_category_fkey foreign key (convening_event_category) references event_categories (name),
+    constraint users_coordinating_event_id_fkey foreign key (coordinating_event_id) references events (id),
     constraint year_check check (
       (
         (length(year) = 4)
@@ -40,10 +40,11 @@ create table
     constraint check_role_type check (
       (
         (role = 'participant'::text)
-        or (role = 'convenor'::text)
-        or (role = 'superadmin'::text)
-        or (role = 'coordinator'::text)
         or (role = 'event_manager'::text)
+        or (role = 'convenor'::text)
+        or (role = 'coordinator'::text)
+        or (role = 'superadmin'::text)
+        or (role = 'finance_manager'::text)
       )
     )
   ) tablespace pg_default;
@@ -67,7 +68,17 @@ create table
     multiple_registrations_allowed boolean not null default false,
     fees smallint null default '0'::smallint,
     constraint events_pkey primary key (id),
-    constraint events_category_fkey foreign key (category) references event_categories (name)
+    constraint events_category_fkey foreign key (category) references event_categories (name),
+    constraint events_type_check check (
+      (
+        (
+          type = 'TEAM'::text
+        )
+        or (
+          type = 'SOLO'::text
+        )
+      )
+    )
   ) tablespace pg_default;
 ```
 
@@ -115,8 +126,36 @@ create table
     constraint participation_team_member_2_fkey foreign key (team_member_2) references users (email),
     constraint participation_team_member_3_fkey foreign key (team_member_3) references users (email),
     constraint participation_team_member_4_fkey foreign key (team_member_4) references users (email),
-    constraint participation_event_id_fkey foreign key (event_id) references events (id),
     constraint participation_team_member_5_fkey foreign key (team_member_5) references users (email),
-    constraint participation_registered_by_fkey foreign key (registered_by) references users (email)
+    constraint participation_event_id_fkey foreign key (event_id) references events (id),
+    constraint participation_registered_by_fkey foreign key (registered_by) references users (email),
+    constraint team_name_not_null_if_team_member_0_not_null check (
+      (
+        (
+          (team_name is not null)
+          and (team_member_0 is not null)
+        )
+        or (team_member_0 is null)
+      )
+    ),
+    constraint unique_team_members check (
+      (
+        (team_member_0 <> team_member_1)
+        and (team_member_0 <> team_member_2)
+        and (team_member_0 <> team_member_3)
+        and (team_member_0 <> team_member_4)
+        and (team_member_0 <> team_member_5)
+        and (team_member_1 <> team_member_2)
+        and (team_member_1 <> team_member_3)
+        and (team_member_1 <> team_member_4)
+        and (team_member_1 <> team_member_5)
+        and (team_member_2 <> team_member_3)
+        and (team_member_2 <> team_member_4)
+        and (team_member_2 <> team_member_5)
+        and (team_member_3 <> team_member_4)
+        and (team_member_3 <> team_member_5)
+        and (team_member_4 <> team_member_5)
+      )
+    )
   ) tablespace pg_default;
 ```
